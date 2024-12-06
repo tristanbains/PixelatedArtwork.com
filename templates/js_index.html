@@ -164,6 +164,10 @@
         // div_image_grid.scrollIntoView({ behavior: 'smooth' });
         span_filename.innerHTML=file_uploaded_name;
         
+        document.getElementById('img_examples').classList.add('hidden');
+        // document.getElementById('div_welcome_upload').classList.remove('sm:w-1/2')
+        // document.getElementById('div_welcome_upload').classList.remove('mx-auto');
+        // document.getElementById('div_welcome_upload').getElementsByTagName("div")[0].classList.remove('mx-auto');
     };
 
     input_file_welcome.addEventListener('change', () => {
