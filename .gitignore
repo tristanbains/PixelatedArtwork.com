@@ -1,0 +1,40 @@
+# Python-specific
+**/__pycache__/
+.pytest_cache/
+.coverage
+.ipython/
+.jupyter/
+
+
+# Node.js-specific
+node_modules/
+npm-debug.log
+.npm/
+
+.local/
+# Docker-specific
+# Dockerfile
+# compose.yml
+# .dockerignore
+.devcontainer/
+
+# Jupyter-specific
+jupyter_notebook/
+.ipynb_checkpoints/
+
+# IDE/Editor-specific
+.vscode/
+.idea/
+.cache/
+
+# Other common files
+*.pyc
+*.swp
+*~
+
+# Git-specific (consider excluding)
+.git/
+.gitmodules
+.gitattributes
+.git-blame-ignore-revs-file
+.git-rebase-todo

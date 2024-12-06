@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% import "macros.html" as macros with context %}
+{% block content %}
+<div class="bg-gradient-to-b from-white to-gray-50 pt-10 sm:pt-20">
+    <div class="prose mx-auto px-4 max-w-screen-sm -mb-8">
+        <h1 class="">
+            Frequently Asked Questions
+        </h1>
+        <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+            {% for h2 in dict_faq %}
+            <h2 class="text-secondary">{{h2}}</h2>
+            {% for h3 in dict_faq[h2] %}
+                <h3 itemprop="name" class="-mb-4">{{h3}}</h3>
+                <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                        {{dict_faq[h2][h3]|safe}}
+                    </div>
+                </div>
+                
+            {% endfor %}
+        {% endfor %}
+        </div>
+    </div>
+    
+<!-- <article class="prose prose-lg mx-auto px-4 max-w-screen-sm -mb-4">
+    
+    {{dict_faq}}
+    
+
+    
+</article> -->
+</div>
+
+{% endblock content %}

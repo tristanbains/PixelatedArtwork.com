@@ -1,0 +1,472 @@
+
+
+<!-- TOP MENU -->
+
+{% macro topmenu() %}
+<div class="navbar bg-base-100 sticky top-0 z-30 bg-base-100">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost md:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                </svg>
+            </div>
+            <ul tabindex="0" class="menu menu-md dropdown-content bg-base-100 rounded-b-box z-[1] mt-3 w-screen p-2 shadow">
+                <li><a href="{{url_for('page',path='about')}}">About</a></li>
+                <li>
+                  <a>Inspiration</a>
+                  <ul class="p-2">
+                    <li><a href="{{url_for('inspiration',category='famous-art')}}">Famous paintings</a></li>
+                    <li><a href="{{url_for('inspiration',category='famous-landmarks')}}">Famous landmarks</a></li>
+                  </ul>
+                </li>
+                <li><a href="{{url_for('faq')}}">FAQ</a></li>
+            </ul>
+        </div>
+        <a class="mx-8 btn btn-ghost text-xl" href="{{ url_for('home') }}">
+            <p class=""><span class="text-success">Pixelated</span><span class="text-secondary">Artwork</span><span class="text-sm">.com</span></p>
+        </a>
+    </div>
+    <div class="navbar-center hidden md:flex font-semibold">
+      <ul class="menu menu-md menu-horizontal px-1">
+        <li><a href="{{url_for('page',path='about')}}">About</a></li>
+        <li>
+            <details>
+              <summary>Inspiration</summary>
+              <ul class="p-2 w-48 z-[1]">
+                <li><a href="{{url_for('inspiration',category='famous-art')}}">Famous paintings</a></li>
+                <li><a href="{{url_for('inspiration',category='famous-landmarks')}}">Famous landmarks</a></li>
+              </ul>
+            </details>
+          </li>
+          <li><a href="{{url_for('faq')}}">FAQ</a></li>
+        </ul>
+      </div>
+      <!-- <div class="navbar-end">
+        <a class="btn">Button</a>
+      </div> -->
+</div>
+{% endmacro %}
+
+
+{% macro footer() %}
+<div class="w-screen bg-gray-50">
+  <footer class="mx-auto max-w-screen-sm footer text-base-content pt-20 pb-10 px-4">
+    <nav>
+      <h6 class="footer-title">Website</h6>
+      <a href="{{url_for('home')}}" class="link link-hover">Upload your image</a>
+      <a href="{{url_for('page',path='about')}}" class="link link-hover">About</a>
+      <a href="{{url_for('faq')}}" class="link link-hover">FAQ</a>
+    </nav>
+    <nav>
+      <h6 class="footer-title">Inspiration</h6>
+      <a href="{{url_for('inspiration',category='famous-art')}}" class="link link-hover">Pixel art famous paintings</a>
+      <a href="{{url_for('inspiration',category='famous-landmarks')}}" class="link link-hover">Pixel art famous landmarks</a>
+    </nav>
+    <nav>
+      <h6 class="footer-title">Contact</h6>
+      <div class="grid grid-flow-col gap-4">
+        <a href="https://www.linkedin.com/in/tristanbains/">
+          <svg class="fill-current hover:fill-blue-500" width="24" height="24" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <title>linkedin</title>
+            <path d="M28.778 1.004h-25.56c-0.008-0-0.017-0-0.027-0-1.199 0-2.172 0.964-2.186 2.159v25.672c0.014 1.196 0.987 2.161 2.186 2.161 0.010 0 0.019-0 0.029-0h25.555c0.008 0 0.018 0 0.028 0 1.2 0 2.175-0.963 2.194-2.159l0-0.002v-25.67c-0.019-1.197-0.994-2.161-2.195-2.161-0.010 0-0.019 0-0.029 0h0.001zM9.9 26.562h-4.454v-14.311h4.454zM7.674 10.293c-1.425 0-2.579-1.155-2.579-2.579s1.155-2.579 2.579-2.579c1.424 0 2.579 1.154 2.579 2.578v0c0 0.001 0 0.002 0 0.004 0 1.423-1.154 2.577-2.577 2.577-0.001 0-0.002 0-0.003 0h0zM26.556 26.562h-4.441v-6.959c0-1.66-0.034-3.795-2.314-3.795-2.316 0-2.669 1.806-2.669 3.673v7.082h-4.441v-14.311h4.266v1.951h0.058c0.828-1.395 2.326-2.315 4.039-2.315 0.061 0 0.121 0.001 0.181 0.003l-0.009-0c4.5 0 5.332 2.962 5.332 6.817v7.855z"></path>
+            </svg>
+        </a>
+      </div>
+    </nav>
+  </footer>
+  <div class="mx-auto px-4 max-w-screen-sm pb-10">
+    <p class="text-sm text-center">Designed and built by Tristan Bains in Amsterdam, NL</p>
+  </div>  
+  
+</div>
+
+{% endmacro %}
+
+<!-- INPUTS -->
+
+{% macro input_button(id,text_inside='',text_above='',text_below='',btn_color='btn-base-300',btn_outline=false,btn_square=false,btn_ar=false,hidden=false,btn_disabled=false,logo='') %}
+<div class="{{ 'hidden' if hidden }}">
+  {% if text_above!=''%}
+  <p class=" text-center px-2 py-1 text-xs font-semibold">{{ text_above }}</p>
+  {% endif %}
+  <button class="btn {{'btn-outline' if btn_outline}} {{ btn_color }} p-2 {{ 'btn-square' if btn_square }} {{ 'btn-ar' if btn_ar }} {{ 'btn-disabled' if btn_disabled }}" id="{{ id }}">
+      {{ showlogo(logo) if logo!='' }}  
+      {{ text_inside }}
+  </button>
+  {% if text_below!=''%}
+  <p class="max-w-12 text-center px-2 py-1 text-xs font-semibold">{{ text_below }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro showlogo(name) %}
+  {% if name.lower() == 'pinterest' %}
+    <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-220.000000, -7399.000000)" fill="#000000"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M173.876,7239 C168.399,7239 164,7243.43481 164,7248.95866 C164,7253.05869 166.407,7256.48916 169.893,7258.07936 C169.893,7256.21186 169.88,7256.45286 171.303,7250.38046 C170.521,7248.80236 171.129,7246.19673 172.88,7246.19673 C175.31,7246.19673 173.659,7249.79964 173.378,7251.2174 C173.129,7252.30544 173.959,7253.14238 174.955,7253.14238 C176.864,7253.14238 178.108,7250.71524 178.108,7247.87063 C178.108,7245.69456 176.615,7244.10437 174.042,7244.10437 C169.467,7244.10437 168.307,7249.19966 169.893,7250.79893 C170.292,7251.40294 169.893,7251.43118 169.893,7252.22174 C169.616,7253.05768 167.403,7251.84259 167.403,7248.70757 C167.403,7245.86195 169.727,7242.51518 174.457,7242.51518 C178.191,7242.51518 180.681,7245.27609 180.681,7248.2054 C180.681,7252.13805 178.523,7254.98366 175.37,7254.98366 C174.291,7254.98366 173.295,7254.3978 172.963,7253.72824 C172.36,7256.07371 172.238,7257.26258 171.303,7258.58153 C172.216,7258.83261 173.129,7259 174.125,7259 C179.602,7259 184,7254.56519 184,7249.04235 C183.752,7243.43481 179.353,7239 173.876,7239" id="pinterest-[#180]"> </path> </g> </g> </g> </g></svg>
+  {% elif name.lower() == 'rotate' %}
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g> <path d="M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+  {% elif name.lower() == 'copy' %}
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier"> <rect width="24" height="24" fill=""></rect> <rect x="4" y="8" width="12" height="12" rx="1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect> <path d="M8 6V5C8 4.44772 8.44772 4 9 4H19C19.5523 4 20 4.44772 20 5V15C20 15.5523 19.5523 16 19 16H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2"></path> </g></svg>
+    {% else %}
+  {% endif %}
+{% endmacro %}
+
+{% macro button_ar_rows(list_ar=['1:1','3:2'],ncol=4,btn_square=false) %}
+  {% for ar_b in list_ar %}
+    {% if loop.first %}
+    <div class="flex pt-6 gap-4 ars">
+    {% endif %}
+    
+    <div class="">
+      {{ input_button('button_'+ar_b,text_inside=ar_b,btn_square=btn_square,btn_ar=true) }}  
+    </div>
+    {% if ((loop.index % ncol == 0) and (not loop.first) and (not loop.last)) %}
+    </div><div class="flex pt-4 gap-4 ars">
+    {% endif %}
+    
+    {% if loop.last %}
+    </div>
+    {% endif %}
+
+  {% endfor %}
+
+{% endmacro %}
+
+{% macro input_number(id) %}
+
+{% endmacro %}
+
+
+{% macro pixelinput() %}
+<div tabindex="0" role="button" class="dropdown px-2">
+  <div class="stats shadow w-full bg-primary text-primary-content">
+    <div class="stat">
+      <div class="stat-title">Squares</div>
+      <div class="stat-value"><span id="span_w">40</span> x <span id="span_h">30</span></div>
+      <div class="stat-desc">width x height</div>
+    </div>
+    <div class="stat hidden sm:block">
+      <div class="stat-title">Aspect ratio</div>
+      <div class="stat-value" id="stat_ar">2</div>
+      <div class="stat-desc">width/height</div>
+    </div>
+    <div class="stat">
+      <div class="stat-title">Detail level</div>
+      <div class="stat-value" id="stat_detail">2</div>
+      <div class="stat-desc">min. squares</div>
+    </div>
+  </div>
+  <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-96 mt-2 p-8 shadow">
+    <div>
+      <p class="text-base font-semibold">Option 1: Define yourself</p>
+      <div class="flex pt-2 gap-2 mt-4">
+          <div class="">
+              <input class="input text-center input-primary text-sm w-14" id="input_w" type="number" value="40" />
+              <p class="text-center py-1 text-xs font-semibold">Width</p>
+          </div>
+          <div class="pt-4">
+              x
+          </div>
+          <div class="">
+              <input class="input input-primary text-center text-sm w-14" id="input_h" type="number" value="50" />
+              <p class=" py-1 text-xs font-semibold text-center">Height</p>
+          </div>
+          <button class="btn btn-primary min-w-32 btn-disabled ml-4" id="button_apply">Apply</button>
+      </div>
+  </div>
+  <div class="divider py-8">OR</div>
+  <div>
+      <p class="text-base font-semibold">Option 2: Detail level + aspect ratio</p>
+  </div>
+  <div class="pt-4">
+    <li class="-mx-4">
+        <div class="flex items-center gap-4">
+          <input class="input input-primary text-xs text-center font-bold w-16" id="input_detail" type="number" value="30" step="1">
+          <div>
+            <p class="font-semibold">Detail level</p>
+            <p class="">Minimum number of squares per row and column</p>
+          </div>
+        </div>
+    </li>
+    <li class="-mx-4">
+      <div class="flex items-center gap-4">
+        <input class="input input-primary text-xs text-center font-bold w-16" id="input_ar" type="number" value="1.25" step="0.01">
+        <div>
+          <p class="font-semibold">Aspect ratio</p>
+          <p class="">Define the aspect ratio (w/h) yourself</p>
+        </div>
+      </div>
+    </li>
+    
+
+    <!-- <div class="flex gap-4 my-4 ars">
+      {% for ar_b in ['1:1','3:2','4:3','16:9'] %}
+      <div>
+        {{ input_button('button_'+ar_b,text_inside=ar_b) }}
+      </div>
+      {% endfor %}  
+    </div> -->
+
+    
+    <!-- <li class="-mx-4"><a href="">
+      <div class="flex items-center gap-4">
+        {{ input_button('button_rotate',logo='rotate') }}
+        <div>
+          <p class="font-bold">Swap width and height</p>
+          <p class="">Change <span>40x30</span> to <span>30x40</span></p>
+        </div>
+      </div>
+    </a></li>
+
+    <li class="-mx-4"><a href="">
+      <div class="flex items-center gap-4">
+        {{ input_button('button_copy',logo='copy') }}
+        <div>
+          <p class="font-bold max-w-11/12">Get and use aspect ratio of uploaded image</p>
+          <p>In this case, ...</p>
+        </div>
+      </div>
+    </a></li> -->
+
+    
+      <!-- <p class="text-xs font-semibold">Quick controls</p>
+      <div class="flex py-2 gap-4">
+          {{ input_button('button_copy',logo='copy',text_below='get ratio') }}
+          {{ input_button('button_rotate',logo='rotate',text_below='rotate') }}
+          {{ input_button('button_detail',text_inside='30',text_below='detail level') }}
+        </div> -->
+  </div>
+  </ul>
+
+</div>
+{% endmacro %}
+
+{% macro input_select(id,text_above='') %}
+<div>
+  <p class="px-2 py-1 text-xs font-semibold">{{ text_above }}</p>
+  <select class="select select-primary select-md w-48" id="{{ id }}">
+      <option disabled selected>Pick preset</option>
+      <option value='{"select_w":1,"select_h":1}'>Art - square (1x1)</option>
+      <option value='{"select_w":2,"select_h":3}'>Art - high (2x3)</option>
+      <option value='{"select_w":3,"select_h":4}'>Art - high (3x4)</option>
+      <option value='{"select_w":4,"select_h":5}'>Art - high (4x5)</option>
+      <option value='{"select_w":5,"select_h":7}'>Art - high (5x7)</option>
+      <option value='{"select_w":9,"select_h":16}'>Art - high (9x16)</option>
+      <option value='{"select_h":2,"select_w":3}'>Art - wide (3x2)</option>
+      <option value='{"select_h":3,"select_w":4}'>Art - wide (4x3)</option>
+      <option value='{"select_h":4,"select_w":5}'>Art - wide (5x4)</option>
+      <option value='{"select_h":5,"select_w":7}'>Art - wide (7x5)</option>
+      <option value='{"select_h":9,"select_w":16}'>Art - wide (16x9)</option>
+  </select>
+</div>
+
+{% endmacro %}
+
+
+<!-- MODAL -->
+
+
+
+
+{% macro modal(id) %}
+<dialog id="{{ id }}" class="modal">
+  <div class="modal-box w-11/12 max-w-6xl z-[1]">
+      <!-- <h3 class="text-lg font-bold">Hello!</h3> -->
+      <p class="py-4">Press ESC key or click outside to close</p>
+      <canvas class="" id="modal_canvas"></canvas>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+  </form>
+</dialog>
+{% endmacro %}
+
+
+<!-- IMAGE CARD -->
+
+{% macro image_card(id_out) %}
+<div class="break-inside-avoid-column group mb-8">
+    <div id="{{ id_out }}" class="relative opacity-100 flex items-center justify-center">
+        <div class="absolute w-full h-full opacity-0 group-hover:opacity-40 bg-gray-900 rounded-box"></div>
+        <img class="rounded-box" src="" alt="">
+        <button onclick="displayModal('{{ id_out }}')" class="btn btn-accent text-base-100 absolute invisible group-hover:visible group-hover:opacity-100">Zoom in</button>
+    </div>
+    <div class="flex items-start justify-between">
+        <div class="flex">
+          <div class="h-12 w-12 mt-3" id="{{ id_out + '_sample'}}"></div>
+          <p class="p-2 font-light text-sm">
+              <span class="font-semibold text-lg">{{ id_out.title() }}</span>
+              <br/><span class="svg_info">Info</span> pixels
+          </p>
+        </div>
+        
+        <div class="flex ">
+          <!-- <svg class="w-5 h-5 mx-1 mt-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g> <path d="M5.625 15C5.625 14.5858 5.28921 14.25 4.875 14.25C4.46079 14.25 4.125 14.5858 4.125 15H5.625ZM4.875 16H4.125H4.875ZM19.275 15C19.275 14.5858 18.9392 14.25 18.525 14.25C18.1108 14.25 17.775 14.5858 17.775 15H19.275ZM11.1086 15.5387C10.8539 15.8653 10.9121 16.3366 11.2387 16.5914C11.5653 16.8461 12.0366 16.7879 12.2914 16.4613L11.1086 15.5387ZM16.1914 11.4613C16.4461 11.1347 16.3879 10.6634 16.0613 10.4086C15.7347 10.1539 15.2634 10.2121 15.0086 10.5387L16.1914 11.4613ZM11.1086 16.4613C11.3634 16.7879 11.8347 16.8461 12.1613 16.5914C12.4879 16.3366 12.5461 15.8653 12.2914 15.5387L11.1086 16.4613ZM8.39138 10.5387C8.13662 10.2121 7.66533 10.1539 7.33873 10.4086C7.01212 10.6634 6.95387 11.1347 7.20862 11.4613L8.39138 10.5387ZM10.95 16C10.95 16.4142 11.2858 16.75 11.7 16.75C12.1142 16.75 12.45 16.4142 12.45 16H10.95ZM12.45 5C12.45 4.58579 12.1142 4.25 11.7 4.25C11.2858 4.25 10.95 4.58579 10.95 5H12.45ZM4.125 15V16H5.625V15H4.125ZM4.125 16C4.125 18.0531 5.75257 19.75 7.8 19.75V18.25C6.61657 18.25 5.625 17.2607 5.625 16H4.125ZM7.8 19.75H15.6V18.25H7.8V19.75ZM15.6 19.75C17.6474 19.75 19.275 18.0531 19.275 16H17.775C17.775 17.2607 16.7834 18.25 15.6 18.25V19.75ZM19.275 16V15H17.775V16H19.275ZM12.2914 16.4613L16.1914 11.4613L15.0086 10.5387L11.1086 15.5387L12.2914 16.4613ZM12.2914 15.5387L8.39138 10.5387L7.20862 11.4613L11.1086 16.4613L12.2914 15.5387ZM12.45 16V5H10.95V16H12.45Z" fill="#000000"></path> </g></svg> -->
+          <!-- <button class="btn btn-secondary btn-sm my-2 mr-2">
+            PNG
+          </button> -->
+          <button onclick="download_svg('{{ id_out }}')" class="btn btn-primary btn-sm my-2  mr-2">
+              SVG
+          </button>
+        </div>
+        
+  </div>
+</div>
+{% endmacro %}
+
+
+{% macro image_grid_card(id) %}
+<div class="group">
+  
+  <div id="div_{{id}}" class="relative">
+    
+    <div class="relative">
+      {% if id in ['bricks','circles','squares'] %}
+      <div class="absolute w-full h-full opacity-0 group-hover:opacity-90 bg-base-100 rounded-box"></div>
+      <div class="absolute opacity-0 group-hover:opacity-100 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <p class="badge badge-secondary">5x5 zoom</p>
+        <img id="img_sample_{{id}}" class="h-48 w-48 bg-neutral-content" src="" alt="{{id}} output sample">
+      </div>
+      {%endif%}
+      
+      <img id="img_{{id}}" class="rounded-box {%if (id=='uploaded')%}h-48{%else%}h-[calc(50vh_-_120px)]{%endif%}" src="" alt="{{id}} output format">
+    </div>
+    
+    {% if id=='uploaded' %}
+    <div class="absolute top-4 left-4 badge badge-secondary">
+      Uploaded image
+    </div>
+    {% endif %}
+    <!-- <div class="absolute bottom-4 left-4 badge badge-secondary badge-lg">
+      <span id="span_wxh_{{id}}"></span>
+    </div> -->
+    <div class="flex items-start justify-between h-16">
+      <div class="flex">
+        <p class="px-2 py-1 font-light text-sm leading-tight">
+          {% if id!='uploaded' %}
+          <span id="span_title_{{id}}" class="font-semibold text-lg">{{ id.title().replace('_',':') }}</span>
+          {% if id in ['4_3','7_5','9_6','13_10']%}
+          <button class="badge badge-secondary  ml-2 badge-sm tooltip tooltip-top z-10" data-tip="IKEA sells {{id.replace('_',':')}} frames">IKEA frame</button>
+          {% endif %}
+          <br/>
+          {% endif %}
+          <span id="span_wxh_{{id}}">Info</span> pixels
+        </p>
+        <!-- <p class="p2 font-semibold text-lg">{{ id.title() }}</p> -->
+        <!-- {% if id in ['bricks','squares','circles'] %}
+          <div>HIER SAMPLE</div>
+        {% endif %} -->
+      </div>
+      
+      {% if id!='uploaded' %}
+      <div class="flex">
+        <!-- <button class="btn btn-primary btn-sm my-2 mr-2 transition ease-in-out hover:scale-[0.95]">
+          PNG
+        </button> -->
+        <button onclick="download_png('{{ id }}')" class="btn btn-primary btn-xs my-2 mr-2 transition ease-in-out hover:scale-[0.95] tooltip tooltip-top z-10 before:whitespace-pre-wrap before:content-[attr(data-tip)]" data-tip="Download {{id.replace('_',':')}} PNG (FREE)">
+          PNG
+        </button>
+        <button onclick="download_svg('{{ id }}')" class="btn btn-primary btn-xs my-2 mr-2 transition ease-in-out hover:scale-[0.95] tooltip tooltip-top z-10 before:whitespace-pre-wrap before:content-[attr(data-tip)]" data-tip="Download {{id.replace('_',':')}} SVG (FREE)">
+          SVG
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  
+  
+  
+  
+  
+</div>
+
+
+{% endmacro %}
+
+
+{% macro test(message,dict_page_meta='XYZ') %}
+<p class="text-blue-700 bg-blue-100 p-4">Test - message: {{message}} from macro test(message)</p>
+<p class="text-blue-600 bg-blue-50 p-4">{{ dict_md_all_yaml }}</p>
+{% endmacro %}
+
+{% macro breadcrumbs(path) %}
+<div class="breadcrumbs text-sm">
+    <ul>
+        <li>
+            <a href="{{ url_for('home') }}">Home</a>
+        </li>
+        {% for p in path.split('/') %}
+        <li><a href="/{{''.join(path.split('/')[0:loop.index])}}/">{{ p }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}
+
+<!-- TO DO: title uitlezen uit dict all, als laatste in split. Kijken of via url_for kan. Hoofdletter begin als anders -->
+
+{% macro navbar(dict_menu_page=dict_menu) %}
+<!-- <p class="bg-red-50 w-full">{{dict_menu_page}}</p> -->
+<div class="navbar">
+    
+    <div class="navbar-start">
+      <div class="dropdown">
+        <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+          {% for item in dict_menu %}
+            {% if 'path' in dict_menu[item] %}
+            <li><a href="{{ dict_menu[item]['path'] }}">{{ item }}</a></li>
+            {% else %}
+            <li><a class="pointer-events-none">{{ item }}</a></li>
+            {% endif %}
+          
+            {% if 'subitems' in dict_menu[item] %}
+            <ul class="p-2">
+                {% for subitem in dict_menu[item]['subitems'] %}
+                    {% if 'path' in dict_menu[item]['subitems'][subitem] %}
+                    <li><a href="{{dict_menu[item]['subitems'][subitem]['path']}}">{{ subitem }}</a></li>
+                    {% else %}
+                    <li><a class="pointer-events-none">{{ subitem }}</a></li>
+                    {% endif %}
+                
+                {% endfor %}
+            </ul>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      <a class="btn btn-ghost text-xl">daisyUI</a>
+    </div>
+    <div class="navbar-end hidden lg:flex">
+      <ul class="menu menu-horizontal px-1">
+        {% for item in dict_menu %}
+
+            {% if 'subitems' in dict_menu[item] %}
+            <li>
+                <details>
+                    <summary>{{ item }}</summary>
+                    <ul class="p-2">
+                        {% for subitem in dict_menu[item]['subitems'] %}
+                            {% if 'path' in dict_menu[item]['subitems'][subitem] %}
+                            <li><a href="{{ dict_menu[item]['subitems'][subitem]['path'] }}">{{ subitem }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </details>
+            </li>
+            {% else %}
+                {% if 'path' in dict_menu[item] %}
+                <li><a href="{{dict_menu[item]['path']}}">{{ item }}</a></li>
+                {% endif %}
+            {% endif %}
+          
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+{% endmacro %}

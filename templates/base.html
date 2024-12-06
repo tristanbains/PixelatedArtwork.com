@@ -1,0 +1,31 @@
+{% import "macros.html" as macros with context %}
+
+<!DOCTYPE html>
+
+<html lang="{{dict_website['lang']}}" data-theme="{{dict_website['data_theme']}}" style="scroll-behavior: smooth;"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+    {% if dict_page_meta %}
+        {% if 'title' in dict_page_meta %}<title>{{ dict_page_meta['title'] }}</title>{% endif %}
+        {% for tg in ['description']%}
+            {% if tg in dict_page_meta %}<meta name="{{tg}}" content="{{ dict_page_meta[tg] }}">{% endif %}
+        {% endfor %}
+        {% if 'canonical' in dict_page_meta%}<link rel="canonical" href="{{dict_page_meta['canonical']}}">{%endif%}
+    {% endif %}
+    
+</head>
+<body class="min-h-screen">
+    {{ macros.topmenu() }}
+    {% block content %}
+    <!-- <p>Default content to be displayed</p> -->
+    {% endblock content %}
+    
+    {% include "js_all.html" %}
+    {{ macros.footer() }}
+
+    
+</body>
+
+</html>

@@ -1,0 +1,573 @@
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script>
+    // User controls:
+    const fileInput = document.getElementById("fileInput");
+    const selectInput = document.getElementById("input_select");
+    const imgInput = document.getElementById("imgInput");
+
+    // const wInput = document.getElementById("input_width");
+    // const hInput = document.getElementById("input_height");
+    // const rotateInput = document.getElementById("input_rotate");
+    // const arInput = document.getElementById("input_ratio");
+    const pxInput = document.getElementById("input_minpx");
+    
+    
+
+
+    var w_current = 35;
+    var w_updated = w_current;
+    var h_current = 25;
+    var h_updated = h_current;
+
+    var minpx_current = Math.min(h_current,w_current);
+    var minpx_updated = minpx_current;
+    var ar_current = w_current/h_current;
+    var ar_updated = ar_current;
+    var ar_uploaded = 0;
+
+    const span_h = document.getElementById("span_h");
+    const span_w = document.getElementById("span_w");
+    const button_apply = document.getElementById('button_apply');
+    const input_h = document.getElementById("input_h");
+    const input_w = document.getElementById("input_w");
+    const input_detail = document.getElementById("input_detail");
+    const input_ar = document.getElementById("input_ar");
+    const button_rotate = document.getElementById('button_rotate');
+    const button_copy = document.getElementById('button_copy');
+    const span_swap_current = document.getElementById('swap_current');
+    const span_swap_updated = document.getElementById('swap_updated');
+    const span_ar_uploaded = document.getElementById('ar_uploaded');
+    const stat_ar = document.getElementById('stat_ar');
+    const stat_detail  = document.getElementById('stat_detail');
+    const div_copy_ar = document.getElementById('div_copy_ar');
+
+    const buttons_ar = document.querySelectorAll('.btn-ar');
+    // Initialize all values:
+    // span_h.innerHTML = h_current;
+    // input_h.value = h_current;
+    // span_w.innerHTML = w_current;
+    // input_w.value = w_current;
+    // input_ar.value = ar_current;
+    // input_detail.value = minpx_current;
+
+    var dict_tf_array = {};
+    var dict_svg = {};
+
+    var px_size = 0,
+        nx = 0,
+        ny = 0,
+        pct_used = 0,
+        ar_input = 1;
+
+
+    // ------- Listeners: --------
+
+
+    input_h.onchange = function(){
+        button_apply.classList.remove('btn-disabled');
+        h_updated = input_h.value;
+        ar_updated = w_updated/h_updated;
+        minpx_updated = Math.min(h_updated,w_updated);
+        // pressApply();
+    };
+    input_w.onchange = function(){
+        button_apply.classList.remove('btn-disabled');
+        w_updated = input_w.value;
+        ar_updated = w_updated/h_updated;
+        minpx_updated = Math.min(h_updated,w_updated);
+    };
+    input_detail.onchange = function(){
+        minpx_updated = input_detail.value;
+        w_updated = (ar_current>1) ? Math.ceil(ar_current*minpx_updated) : minpx_updated ;
+        h_updated = (ar_current>1) ? minpx_updated : Math.ceil(minpx_updated/ar_current) ;
+        pressApply();
+    };
+    input_ar.onchange = function(){
+        ar_updated = input_ar.value;
+        w_updated = (ar_updated>1) ? Math.ceil(ar_updated*minpx_current) : minpx_current ;
+        h_updated = (ar_updated>1) ? minpx_current : Math.ceil(minpx_current/ar_updated) ;
+        pressApply();
+        activateTab(ar_current);
+    };
+    button_apply.onclick = function(){
+        pressApply();
+        activateTab(ar_current);
+    };
+    button_rotate.onclick = function(){
+        h_updated = w_current;
+        w_updated = h_current;
+        ar_updated = w_updated/h_updated;
+        pressApply();
+        activateTab(ar_current);
+    };
+    button_copy.onclick = function(){
+        ar_updated = ar_uploaded;
+        w_updated = (ar_updated>1) ? Math.ceil(ar_updated*minpx_current) : minpx_current ;
+        h_updated = (ar_updated>1) ? minpx_current : Math.ceil(minpx_current/ar_updated) ;
+        pressApply();
+        activateTab(ar_current);
+    };
+
+
+    buttons_ar.forEach((node, index) => {
+        node.addEventListener('click', () => {
+            btn_ar_function(index);
+        });
+    });
+
+    function btn_ar_function(i) {
+        ar_btn_i = buttons_ar[i].innerHTML;
+        [w_i,h_i] = ar_btn_i.split(':');
+        ar_i = w_i/h_i;
+        ar_updated = ar_i;
+        w_updated = (ar_updated>1) ? Math.ceil(ar_updated*minpx_current) : minpx_current ;
+        h_updated = (ar_updated>1) ? minpx_current : Math.ceil(minpx_current/ar_updated) ;
+        pressApply();
+        console.log('Node ' + i + ' clicked, '+ar_i);
+    }
+
+
+    function pressApply(){
+        // console.log(`${w_current}x${h_current}, ${ar_current}, ${minpx_current}`);
+        button_apply.classList.remove('btn-disabled');
+        w_current = w_updated;
+        h_current = h_updated;
+        ar_current = ar_updated;
+        minpx_current = minpx_updated;
+
+        span_h.innerHTML = h_updated;
+        input_h.value = h_updated;
+        span_w.innerHTML = w_updated;
+        input_w.value = w_updated;
+        input_ar.value = ar_updated;
+        input_detail.value = minpx_updated;
+        span_swap_current.innerHTML = `${w_current}x${h_current}`
+        span_swap_updated.innerHTML = `${h_current}x${w_current}`
+        stat_ar.innerHTML = Math.round(ar_updated*1000)/1000;
+        stat_detail.innerHTML = minpx_current;
+        button_apply.classList.add('btn-disabled');
+        // console.log(`${w_updated}x${h_updated}, ${ar_updated}, ${minpx_updated}`);
+        // console.log('');
+        updateSVG();
+    }
+
+    function activateTab(ar){
+        if (ar>1){
+            document.querySelector('[aria-label="IKEA wide"]').checked = true;
+        } else {
+            document.querySelector('[aria-label="IKEA high"]').checked = true;
+        }
+        
+    }
+
+    // Initialize all values:
+    pressApply();
+    activateTab(ar_current);
+    
+    fileInput.onchange = function () {
+        imgInput.src = URL.createObjectURL(fileInput.files[0]);
+        // div_copy_ar.classList.remove('hidden');
+        button_copy.classList.remove('btn-disabled');
+        document.getElementById("image_grid").classList.remove("hidden");
+        document.getElementById("image_input").classList.remove("hidden");
+        updateSVG();
+    }
+
+    async function updateSVG(){
+        updateGrid();
+        await inference();
+        await array2svg('pixels');
+        for (const style_svg of ['pixels','bricks','grayscale','circles','squares']){
+            displaySVG(style_svg,style=style_svg);
+        }
+    }
+
+
+    // ------- Listener functions: --------
+
+
+    function updateGrid(ar=ar_current){
+        // TO DO: aantal columns aanpassen, add en remove classList  
+        el = document.getElementById('image_grid');
+        if(ar>1){ //wide -> less columns
+            el.classList.remove('columns-2');
+            el.classList.remove('md:columns-3');
+            el.classList.remove('lg:columns-4');
+            el.classList.add('columns-1');
+            el.classList.add('md:columns-2');
+            el.classList.add('lg:columns-3');
+        } else {
+            el.classList.remove('columns-1');
+            el.classList.remove('md:columns-2');
+            el.classList.remove('lg:columns-3');
+            el.classList.add('columns-2');
+            el.classList.add('md:columns-3');
+            el.classList.add('lg:columns-4');
+        }
+    };
+
+    // ------- Model: --------
+
+
+    function createModel(h,w,ar,minpx){
+        const imgInput = document.getElementById("imgInput");
+        const tf_imgInput = tf.browser.fromPixels(imgInput, 3)
+        const imgInput_h = tf_imgInput[0]
+        const imgInput_w = tf_imgInput[1]
+
+
+        ar_input = w/h;
+        
+        if(ar>1){
+            ny = parseInt(minpx);
+            nx = Math.ceil(minpx*ar);
+        } else {
+            nx = parseInt(minpx);
+            ny = Math.ceil(minpx/ar);
+        }
+        px_size = Math.floor(Math.min(w/nx,h/ny));
+        // For center cropping:
+        pl = Math.floor((w-nx*px_size)/2);
+        pt = Math.floor((h-ny*px_size)/2);
+        dl = Number.isInteger((w-nx*px_size)/2) ? 0 : 1;
+        dt = Number.isInteger((h-ny*px_size)/2) ? 0 : 1;
+
+        const model = tf.sequential();
+        model.add(tf.layers.inputLayer({batchInputShape:[1,imgInput_h,imgInput_w,3]}));
+        model.add(tf.layers.cropping2D({cropping:[[pt,pt+dt],[pl,pl+dl]]}));
+        model.add(tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}));
+        // model.add(tf.layers.cropping2D({cropping:[[ch,ch+dh],[cw,cw+dw]]}));
+        // model.add(tf.layers.averagePooling2d({poolSize:px,strides:px,padding:'valid'}));
+        return model;
+    }
+    
+    // ar=arInput.value,minpx=pxInput.value,id_out='pixels'
+    function inference(ar=ar_current,minpx=minpx_current,id_out='pixels'){
+        return new Promise((resolve,reject) => {
+            if(fileInput.files && fileInput.files[0]){
+                const file = fileInput.files[0];
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                // Wait for the image to load before processing
+                img.onload = () => {
+                    const tf_image = tf.browser.fromPixels(img, 3);
+                    model_px = createModel(h=tf_image.shape[0],w=tf_image.shape[1],ar=ar,minpx=minpx);
+                    const tf_image_model = model_px.predict(tf_image.expandDims(0)).squeeze().round().cast('int32');
+                    const img_output_px = tf.browser.toPixels(tf_image_model);
+                    dict_tf_array[id_out] = tf_image_model.arraySync();
+                    // console.log(tf_image.shape);
+                    w_tf = tf_image.shape[1];
+                    h_tf = tf_image.shape[0];
+                    ar_uploaded = w_tf/h_tf;
+                    ar_uploaded_3 = Math.round(1000*ar_uploaded)/1000
+                    document.getElementById('img_shape').innerHTML=`${w_tf} x ${h_tf}`
+                    document.getElementById('img_ar').innerHTML=`${ar_uploaded_3}`
+                    document.getElementById('ar_uploaded').innerHTML=`${ar_uploaded_3}`
+                    // console.log(ar_tf)
+                    
+                    tf_image.dispose();
+                    tf_image_model.dispose();
+                    resolve();
+                }
+            }
+        })
+    };
+
+
+    function array2svg(id,factor=100,rx=0,p=0){
+        return new Promise((resolve,reject) => {
+            if (id in dict_tf_array){
+                js_array = dict_tf_array[id];
+                h=js_array.length;
+                w=js_array[0].length;
+                render=(rx==0 && p==0)?'crispEdges':'geometricPrecision';
+                const svg_viewBox = `<svg class="h-auto w-auto rounded-box" viewBox="0 0 ${w*factor} ${h*factor}" xmlns="http://www.w3.org/2000/svg">`;
+                    // const svg_viewBox = `<svg class="rounded-box" height="${h*factor}" width="${w*factor}" viewBox="0 0 ${w*factor} ${h*factor}" xmlns="http://www.w3.org/2000/svg">`;
+                const svg_defs = `<defs><rect id="1x1" width="${factor-(2*p)}" height="${factor-(2*p)}" rx="${rx}" shape-rendering="${render}" /></defs>`
+                var svg_loop = ''
+                for(var ih=0;ih<h;ih++){
+                    var row = js_array[ih];
+                    for(var iw=0;iw<w;iw++){
+                        svg_loop += `<use x="${p+(iw*factor)}" y="${p+ih*factor}" fill="rgb(${row[iw]})" href="#1x1"/>`
+                    }
+                }
+                const svg_string = svg_viewBox + svg_defs + '<g>' + svg_loop + '</g>' + '</svg>'
+                dict_svg[id]=svg_string;
+                resolve();
+            }
+        })
+    };
+
+
+    function svg2png(svg_in,el_img){
+        let blob = new Blob([svg_in], {type: 'image/svg+xml'});
+        let url = URL.createObjectURL(blob);
+        el_img.src = url;
+        el_img.addEventListener('load', () => URL.revokeObjectURL(url), {once: true});
+    };
+
+    function displaySVG(id_out,style='pixels',id="pixels",factor=100,rx=0,p=0){
+        svg_id = dict_svg[id];
+        el_svg = document.getElementById(id_out).getElementsByTagName('svg')[0];
+        el_img = document.getElementById(id_out).getElementsByTagName('img')[0];
+        svg_nxn = svg_sample(svg=dict_svg['pixels']);
+        switch (style) {
+            case 'pixels':
+                svg_out = svg_id;
+                svg_out_nxn = svg_nxn;
+                break;
+            case 'grayscale':
+                svg_out = svg_grayscale(svg_id);
+                svg_out_nxn = svg_grayscale(svg_nxn);
+                break;
+            case 'bricks':
+                svg_out = svg_brickify(svg_id);
+                svg_out_nxn = svg_brickify(svg_nxn);
+                break;
+            case 'circles':
+                svg_out = svg_circles(svg_id);
+                svg_out_nxn = svg_circles(svg_nxn);
+                break;
+            case 'squares':
+                svg_out = svg_squares(svg_id);
+                svg_out_nxn = svg_squares(svg_nxn);
+                break;
+        }
+        svg2png(svg_out,el_img);
+        dict_svg[id_out] = svg_out;
+        array_id = dict_tf_array[id];
+        h = array_id.length;
+        w= array_id[0].length;
+        els_svg_info = document.getElementById(id_out).parentNode.querySelectorAll('.svg_info');
+        if(els_svg_info.length>0){
+            els_svg_info[0].innerText = `${w} x ${h}`;
+        }
+        // console.log(svg_out_nxn);
+        document.getElementById(style+'_sample').innerHTML = svg_out_nxn;
+    };
+
+    function displayModal(id_out){
+        const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(dict_svg[id_out])}`;
+        // create an image for that data URL
+        const img = new Image();
+        img.src = dataUrl;
+        img.onload = () => {
+            const canvas = document.getElementById('modal_canvas');   
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(dict_svg[id_out], "image/svg+xml");
+            // Set the canvas dimensions based on the SVG's viewBox
+            const svgElement = svgDoc.documentElement;
+            const viewBox = svgElement.getAttribute('viewBox').split(' ');
+            w = parseInt(viewBox[2]);
+            h = parseInt(viewBox[3]);
+            factor=0.25;
+            canvas.width = w*factor;
+            canvas.height = h*factor;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+        }
+        modal_svg.showModal();
+    };
+
+
+    function download_svg(id_out){
+        var svgData = dict_svg[id_out];
+        var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+        var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+        var svgUrl = URL.createObjectURL(svgBlob);
+        var downloadLink = document.createElement("a");
+        downloadLink.href = svgUrl;
+
+        fname = id_out;
+        fname_input = fileInput.files[0].name;
+        fname_input = fname_input.replace(/\.[^.]+$/, '').replace(' ','_');
+        svgInfo = document.getElementById(id_out).parentNode.querySelectorAll('.svg_info')[0].parentNode.innerText;
+        svgInfo = svgInfo.toLowerCase().replace(' x ','x').replace(' ','_');
+        svgInfo = svgInfo.replace(/pixels$/,'pixelatedartwork_com');
+        downloadLink.download = fname_input+'_'+svgInfo;
+        
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
+
+
+    // ------ Helper functions to convert SVG into other styles -------
+    
+    function extractRGBValues(svgText) {
+        const regex = /fill="rgb\((\d+),(\d+),(\d+)\)"/g;
+        const matches = svgText.matchAll(regex);
+        const rgbValues = [];
+        for (const match of matches) {
+          rgbValues.push([match[1], match[2], match[3]]);
+        }  
+        return rgbValues;
+    };
+
+    function convertToGrayscale(rgbValues) {
+        return rgbValues.map(([r, g, b]) => {
+        //   const grayscaleValue = 0.299 * r + 0.587 * g + 0.114 * b;
+          const grayscaleValue = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          return grayscaleValue;
+        });
+      }
+
+    function applyGrayscale(svgText, grayscaleValues) {
+    const regex = /fill="rgb\((\d+),(\d+),(\d+)\)"/g;
+    let index = 0;
+    return svgText.replace(regex, (_, r, g, b) => {
+        const grayscaleValue = grayscaleValues[index++];
+        return `fill-opacity="${Math.round(1000*grayscaleValue / 255)/1000}"`;
+    });
+    }
+
+    function svg_grayscale(svg){
+        array_rgb = extractRGBValues(svg);
+        array_gray = convertToGrayscale(array_rgb);
+        svg_gray = applyGrayscale(svg,array_gray)
+        svg_gray = svg_gray.replace(/<svg /g, '<svg fill="gray" ')
+        return svg_gray
+    };
+
+    
+
+    function svg_circles(svg,padding=0.05){
+        svg_circle = svg;
+        parser = new DOMParser();
+        svgDoc = parser.parseFromString(svg_circle, "image/svg+xml");
+        rectElement = svgDoc.getElementById('1x1');
+        rect_w = parseInt(rectElement.getAttribute('width'));
+        rect_h = parseInt(rectElement.getAttribute('height'));
+        px = Math.ceil(padding*rect_w);
+        py = Math.ceil(padding*rect_h);
+        w_circle = rect_w-2*px;
+        h_circle = rect_h-2*py;
+        rx = Math.ceil(w_circle/2);
+        // svg_out_outer = svg_circle.match(/<svg[^>]*>/)[0];
+
+        rectElement.setAttribute('width',w_circle);
+        rectElement.setAttribute('height',h_circle);
+        rectElement.setAttribute('rx',rx);
+
+        const useElements = svgDoc.querySelectorAll('use');
+        useElements.forEach(useElement => {
+            const x = parseInt(useElement.getAttribute('x'));
+            useElement.setAttribute('x', x + px);
+            const y = parseInt(useElement.getAttribute('y'));
+            useElement.setAttribute('y', y + py);
+        });
+
+        svg_circle = svgDoc.querySelector('svg').outerHTML;
+        return svg_circle
+    }
+
+    function svg_squares(svg,padding=0.1){
+        svg_square = svg_circles(svg,padding=padding);
+        parser = new DOMParser();
+        svgDoc = parser.parseFromString(svg_circle, "image/svg+xml");
+        rectElement = svgDoc.getElementById('1x1');
+        rectElement.setAttribute('rx',0);
+        svg_square = svgDoc.querySelector('svg').outerHTML;
+        return svg_square
+    }
+
+    function svg_brickify(svg){
+        svg_bricks = svg;
+        viewBox = svg.match(/viewBox="([\s\S]*?)"/)[1].split(' ');
+        viewBox_w = viewBox[2];
+        viewBox_h = viewBox[3];
+        brick_stud_h = svg.match(/id="1x1"[\s\S]*?height="([\s\S]*?)"/)[1];
+        brick_stud_w = svg.match(/id="1x1"[\s\S]*?width="([\s\S]*?)"/)[1];
+        svg_bricks_defs = `<defs>
+            <filter id="blur" x="0" y="0">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+            </filter>`;
+        svg_bricks_defs += `<mask id="stud_circle">
+                <rect x="0" y="0" width="${brick_stud_w}" height="${brick_stud_h}" fill="white"/>
+                <circle cx="${0.5*brick_stud_w}" cy="${0.5*brick_stud_h}" r="${0.31*brick_stud_w}" fill="black" shape-rendering="geometricPrecision"/>
+            </mask>`;
+        svg_bricks_defs += `<pattern id="bricks_pattern" width="${brick_stud_w}" height="${brick_stud_h}" patternUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="${brick_stud_w}" height="${brick_stud_h}"/>
+                <circle cx="${0.54*brick_stud_w}" cy="${0.54*brick_stud_h}" r="${0.31*brick_stud_w}" fill="black" stroke-width="1" shape-rendering="geometricPrecision" opacity="0.4" mask="url(#stud_circle)" style="filter:url(#blur);"/>
+                <circle cx="${0.5*brick_stud_w}" cy="${0.5*brick_stud_h}" r="${0.31*brick_stud_w}" stroke-width="2" stroke-opacity="0.3" stroke="rgba(240,240,240)" stroke-dasharray="60 200" stroke-dashoffset="-90" shape-rendering="geometricPrecision"/>
+            </pattern>`;
+        bricks_rect = `<rect x="0" y="0" height="${viewBox_h}" width="${viewBox_w}" fill="url(#bricks_pattern)"/>`;
+        // Make sure fill of svg is none
+        svg_tag = svg.match(/<svg[\s\S]*?>/)[0];
+        if (svg_tag.includes('fill=')){
+            svg_tag_new = svg_tag.replace(/fill="[\s\S]*?"/g, 'fill="none"');
+        } else {
+            svg_tag_new = svg_tag.replace(/>$/g, ' fill="none" >');
+        }
+        // svg_tag_new
+        svg_bricks = svg_bricks.replace(svg_tag,svg_tag_new);
+        // Add studs to defs:
+        svg_bricks = svg_bricks.replace('<defs>',svg_bricks_defs);
+        // Add strokes:
+        svg_bricks = svg_bricks.replace(/(<rect id="\d+x\d+")/, '$1 stroke="black" stroke-opacity="0.1"');
+        // Add top layers with studs:
+        svg_bricks = svg_bricks.replace('</svg>',bricks_rect+'</svg>');
+        svg_bricks = svg_bricks.replace('shape-rendering="crispEdges"','shape-rendering="geometricPrecision"')
+        return svg_bricks
+    };
+
+
+
+    function svg_sample(svg=dict_svg['pixels'],sample_w=3,sample_h=2){
+        parser = new DOMParser();
+        svgDoc = parser.parseFromString(svg, "image/svg+xml");
+        viewBox = svgDoc.documentElement.getAttribute('viewBox').split(' ');
+        viewBox_w = viewBox[2];
+        viewBox_h = viewBox[3];
+        rectElement = svgDoc.getElementById('1x1');
+        rect_w = parseInt(rectElement.getAttribute('width'));
+        rect_h = parseInt(rectElement.getAttribute('height'));
+        nx = Math.floor(viewBox_w/rect_w);
+        ny = Math.floor(viewBox_h/rect_h);
+        var xm = Math.floor(nx/2);
+        var ym = Math.floor(ny/2);
+        var xs = (xm - Math.floor(sample_w/2))*rect_w;
+        var xe = (xm + Math.ceil(sample_w/2))*rect_w;
+        var ys = (ym - Math.floor(sample_h/2))*rect_h;
+        var ye = (ym + Math.ceil(sample_h/2))*rect_h;
+        var x0 = xs;
+        var y0 = ys;
+        // Build svg_out:
+        // viewBox_outer = `viewBox="${xs} ${ys} ${xe-xs} ${ye-ys}"`
+        viewBox_outer = `viewBox="0 0 ${xe-xs} ${ye-ys}"`
+        svg_out_outer = svg.match(/<svg[^>]*>/)[0];
+        svg_out_outer = svg_out_outer.replace(/viewBox="([^"]+)"/,viewBox_outer);
+        // console.log(svg_out_outer);
+        svg_out_defs = svgDoc.querySelector('defs').outerHTML;
+        svg_out_defs = svg_out_defs.replace(/ xmlns="[^"]+"/,'');
+        svg_out_rects = '';
+        for (let i = xs; i < xe; i += rect_w) {
+            for (let j = ys; j < ye; j += rect_h) {
+                rect_sample_ij = svgDoc.querySelector(`use[x="${i}"][y="${j}"]`).outerHTML;
+                rect_sample_ij = rect_sample_ij.replace(/x="\d+"/,`x="${i-x0}"`);
+                rect_sample_ij = rect_sample_ij.replace(/y="\d+"/,`y="${j-y0}"`);
+                rect_sample_ij = rect_sample_ij.replace(/ xmlns="[^"]+"/,'');
+                svg_out_rects += rect_sample_ij;
+            }
+        }
+        svg_out = svg_out_outer + svg_out_defs + '<g>' + svg_out_rects + '</g></svg>';
+        svg_out = svg_out.replace('rounded-box','');
+        return svg_out
+    };
+    
+    // svg_sample();
+
+    function svg_dummy(){
+        svg_dummy = '<svg class="h-auto w-auto rounded-box" viewBox="2300 3300 500 500" xmlns="http://www.w3.org/2000/svg"><defs ><rect id="1x1" width="100" height="100" rx="0" shape-rendering="crispEdges"/></defs><g><use  x="2300" y="3300" fill="rgb(173,101,63)" href="#1x1"/><use  x="2300" y="3400" fill="rgb(165,94,67)" href="#1x1"/><use  x="2300" y="3500" fill="rgb(173,96,75)" href="#1x1"/><use  x="2300" y="3600" fill="rgb(158,139,136)" href="#1x1"/><use  x="2300" y="3700" fill="rgb(71,132,180)" href="#1x1"/><use  x="2400" y="3300" fill="rgb(166,87,56)" href="#1x1"/><use  x="2400" y="3400" fill="rgb(179,92,63)" href="#1x1"/><use  x="2400" y="3500" fill="rgb(175,91,65)" href="#1x1"/><use  x="2400" y="3600" fill="rgb(150,139,130)" href="#1x1"/><use  x="2400" y="3700" fill="rgb(37,154,190)" href="#1x1"/><use  x="2500" y="3300" fill="rgb(105,49,30)" href="#1x1"/><use  x="2500" y="3400" fill="rgb(161,84,42)" href="#1x1"/><use  x="2500" y="3500" fill="rgb(152,85,62)" href="#1x1"/><use  x="2500" y="3600" fill="rgb(150,122,103)" href="#1x1"/><use  x="2500" y="3700" fill="rgb(54,145,173)" href="#1x1"/><use  x="2600" y="3300" fill="rgb(132,65,28)" href="#1x1"/><use  x="2600" y="3400" fill="rgb(97,49,30)" href="#1x1"/><use  x="2600" y="3500" fill="rgb(100,64,52)" href="#1x1"/><use  x="2600" y="3600" fill="rgb(178,112,92)" href="#1x1"/><use  x="2600" y="3700" fill="rgb(183,157,145)" href="#1x1"/><use  x="2700" y="3300" fill="rgb(65,40,32)" href="#1x1"/><use  x="2700" y="3400" fill="rgb(108,61,42)" href="#1x1"/><use  x="2700" y="3500" fill="rgb(104,61,46)" href="#1x1"/><use  x="2700" y="3600" fill="rgb(196,144,122)" href="#1x1"/><use  x="2700" y="3700" fill="rgb(156,117,120)" href="#1x1"/></g></svg>';
+        dict_svg['pixels'] = svg_dummy;
+        // return svg_dummy
+    }
+
+    svg_dummy();
+    // document.getElementById('pixels_sample').innerHTML = svg_sample(svg=dict_svg['pixels']);
+    
+    
+
+
+</script>

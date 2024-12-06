@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros with context %}
+
+{% block content %}
+
+{% include "promo.html" %}
+
+<div class="p-2 md:p-10">
+    
+    <!-- User controls: -->
+    <div class="md:flex">
+
+        <!-- Uploaded image: -->
+        <!-- <div class="relative h-64 hidden order-1 md:order-2 md:mt-20 mb-4" id="image_input">
+            <div class="absolute top-4 left-4 badge badge-primary">Uploaded image</div>
+            <img class="object-contain rounded-lg max-h-56 md:max-h-72" id="imgInput" />
+            <div class="px-2 py-1 font-light text-sm">
+                <span id="img_shape"></span> pixels<br/>(aspect ratio 
+                <span id="img_ar"></span>)
+            </div>
+        </div> -->
+
+        <!-- Gray box with steps: -->
+        <div id="div_steps" class="hidden mr-2 bg-neutral-content rounded-box p-4 md:p-10">
+            
+            <h1 class="font-bold text-lg md:text-3xl">
+                Create your own pixel art
+            </h1>
+            
+            <div class="lg:flex lg:gap-12 md:pt-4">
+                <div id="div_step1+2">
+                    
+                
+                    <h2 class="font-semibold text-md md:text-xl mt-8 ml-2">
+                        <span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 1</span>
+                        Upload your own image
+                    </h2>
+                    <!-- <p class="px-4">Supported formats: png, jpg</p> -->
+                    <div>
+                        <input type="file" class="file-input file-input-bordered file-input-primary file-input-md w-full max-w-xs mt-4" id="fileInput"/>
+                    </div>
+                    
+                    <h2 class="font-semibold text-md md:text-xl ml-2 mt-12">
+                        <span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 2</span>
+                        Pick your favorite output format
+                    </h2>
+                    
+                    <p class="px-1 pb-4 pt-4 text-sm md:text-base font-light max-w-96">
+                        Define width and height, or alternatively pick the detail level and aspect ratio (Click below to edit)
+                    </p>
+                    <div class="-ml-2">
+                        {{ macros.pixelinput() }}    
+                    </div>
+                    
+                </div>
+
+                
+
+                <div class="max-w-96" id="div_step3">
+                    <div class="">
+                        <h2 class="font-semibold text-md md:text-xl ml-2 mt-8 text-base-content">
+                            <span class="bg-base-300 text-sm md:text-lg py-2 px-3 -ml-2 mr-1 rounded-full">Step 3</span>
+                            (optional): Use quick controls
+                        </h2>
+                        <p class="px-1 pb-4 pt-4 text-sm md:text-base font-light">Pick a predefined (IKEA frame) aspect ratio, or use the uploaded image's aspect ratio</p>
+                    </div>
+                    <div class="">
+                        <div class="px-0 grid gap-4">
+                            
+                            <div class="flex items-center gap-4 px-3">
+                                {{ macros.input_button('button_rotate',logo='rotate',btn_square=true) }}
+                                <div class="text-sm max-w-64">
+                                  <p class="font-bold">Swap width and height</p>
+                                  <p class="text-light ">Change <span id="swap_current">40x30</span> to <span id="swap_updated">30x40</span></p>
+                                </div>
+                              </div>
+                            
+                              <div id="div_copy_ar" class="flex items-center gap-4 px-3">
+                                {{ macros.input_button('button_copy',logo='copy',btn_square=true,btn_disabled=true) }}
+                                <div class="text-sm max-w-64">
+                                  <p class="font-bold">Get and use aspect ratio of uploaded image</p>
+                                  <p class="text-light">In this case, aspect ratio <span id="ar_uploaded">0</span> (w/h)</p>
+                                </div>
+                              </div>
+        
+                              <div role="tablist" class="tabs tabs-lifted w-96">
+                                
+                                <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="Popular" />
+                                <div role="tabpanel" class="tab-content">
+                                    {{ macros.button_ar_rows(list_ar = ['1:1','3:2','4:3','16:9','2:3','3:4','9:16'],btn_square=true) }}
+                                </div>
+                              
+                                <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="IKEA wide" checked="checked"/>
+                                <div role="tabpanel" class="tab-content">
+                                    {{ macros.button_ar_rows(list_ar = ['15:10','18:13','25:20','30:21','40:30','50:40','70:50','91:61']) }}
+                                </div>
+                              
+                                <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="IKEA high" />
+                                <div role="tabpanel" class="tab-content">
+                                  {{ macros.button_ar_rows(list_ar = ['10:15','13:18','20:25','21:30','30:40','40:50','50:70','61:91']) }}
+                                </div>
+                              </div>
+        
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- <h2 class="font-semibold text-base-content text-xl px-4 pt-8 md:pt-16">
+                    <span class="bg-base-300 py-2 px-3 -ml-2 mr-1 rounded-box">Step 3</span>
+                    (optional): Use quick controls
+                </h2> -->
+                <!-- <p class="px-4 pb-2 pt-2 font-light">Pick a predefined (IKEA frame) aspect ratio, or use the uploaded image's aspect ratio</p> -->
+                <!-- <div class="px-0 grid gap-4 pt-4">
+                    <div class="flex items-center gap-4 px-3">
+                        {{ macros.input_button('button_rotate',logo='rotate',btn_square=true) }}
+                        <div class="text-sm max-w-64">
+                          <p class="font-bold">Swap width and height</p>
+                          <p class="text-light ">Change <span id="swap_current">40x30</span> to <span id="swap_updated">30x40</span></p>
+                        </div>
+                      </div>
+                    
+                      <div id="div_copy_ar" class="flex items-center gap-4 px-3">
+                        {{ macros.input_button('button_copy',logo='copy',btn_square=true,btn_disabled=true) }}
+                        <div class="text-sm max-w-64">
+                          <p class="font-bold">Get and use aspect ratio of uploaded image</p>
+                          <p class="text-light">In this case, aspect ratio <span id="ar_uploaded">0</span> (w/h)</p>
+                        </div>
+                      </div>
+
+                      <div role="tablist" class="tabs tabs-lifted w-96 px-3 pt-1">
+                        
+                        <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="Popular" />
+                        <div role="tabpanel" class="tab-content">
+                            {{ macros.button_ar_rows(list_ar = ['1:1','3:2','4:3','16:9','2:3','3:4','9:16'],btn_square=true) }}
+                        </div>
+                      
+                        <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="IKEA wide" checked="checked"/>
+                        <div role="tabpanel" class="tab-content">
+                            {{ macros.button_ar_rows(list_ar = ['15:10','18:13','25:20','30:21','40:30','50:40','70:50','91:61']) }}
+                        </div>
+                      
+                        <input type="radio" name="tabs_ar" role="tab" class="tab" aria-label="IKEA high" />
+                        <div role="tabpanel" class="tab-content">
+                          {{ macros.button_ar_rows(list_ar = ['10:15','13:18','20:25','21:30','30:40','40:50','50:70','61:91']) }}
+                        </div>
+                        
+
+                      </div>
+
+                </div> -->
+                    
+
+                
+            </div>
+
+        </div>
+    </div>
+
+    <!-- OLD: -->
+    <!-- <div class="hidden">
+        <div class="p-2 flex items-end gap-2">
+                    
+            <div>
+                <p class="px-2 py-1 text-xs font-semibold">Popular presets</p>
+                <select class="select select-primary select-md w-48" id="input_select">
+                    <option disabled selected>Pick preset</option>
+                    <option value='{"select_w":1,"select_h":1}'>Art - square (1x1)</option>
+                    <option value='{"select_w":2,"select_h":3}'>Art - high (2x3)</option>
+                    <option value='{"select_w":3,"select_h":4}'>Art - high (3x4)</option>
+                    <option value='{"select_w":4,"select_h":5}'>Art - high (4x5)</option>
+                    <option value='{"select_w":5,"select_h":7}'>Art - high (5x7)</option>
+                    <option value='{"select_w":9,"select_h":16}'>Art - high (9x16)</option>
+                    <option value='{"select_h":2,"select_w":3}'>Art - wide (3x2)</option>
+                    <option value='{"select_h":3,"select_w":4}'>Art - wide (4x3)</option>
+                    <option value='{"select_h":4,"select_w":5}'>Art - wide (5x4)</option>
+                    <option value='{"select_h":5,"select_w":7}'>Art - wide (7x5)</option>
+                    <option value='{"select_h":9,"select_w":16}'>Art - wide (16x9)</option>
+                </select>
+            </div>
+        </div>
+
+        
+        <div class="flex items-end px-2 gap-2">
+            <div class="">
+                <p class="px-2 py-1 text-xs font-semibold">Width</p>
+                <input class="input input-primary text-sm w-16" id="input_width" type="number" value="4" />
+            </div>
+            <div class="">
+                <p class="px-2 py-1 text-xs font-semibold">Height</p>
+                <input class="input input-primary text-sm w-16" id="input_height" type="number" value="3" />
+            </div>
+            <div class="">
+                <button class="btn btn-square btn-primary p-2" id="input_rotate">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g> <path d="M4.06189 13C4.02104 12.6724 4 12.3387 4 12C4 7.58172 7.58172 4 12 4C14.5006 4 16.7332 5.14727 18.2002 6.94416M19.9381 11C19.979 11.3276 20 11.6613 20 12C20 16.4183 16.4183 20 12 20C9.61061 20 7.46589 18.9525 6 17.2916M9 17H6V17.2916M18.2002 4V6.94416M18.2002 6.94416V6.99993L15.2002 7M6 20V17.2916" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                  </button>
+            </div>
+            <div class="tooltip" data-tip="width/height">
+
+                <p class="px-2 py-1 text-xs font-semibold">
+                    Aspect ratio
+                    <span class="inline-flex items-baseline h-3 w-3">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g> <circle cx="12" cy="12" data-name="--Circle" fill="none" id="_--Circle" r="10" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle> <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="12" y2="16"></line> <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="8" y2="8"></line> </g></svg>
+                    </span>
+                </p>
+                <input class="input input-primary text-sm w-28" id="input_ratio" type="number" value="1.4" step="0.01" />
+            </div>
+        </div>
+
+        
+        <div class="flex px-2 pt-6 pb-2 gap-2">
+            <div class="tooltip tooltip-right" data-tip="Minimum amount of pixels per row and column. The higher this value, the longer it takes to display the SVG below.">
+                <p class="px-2 py-1 text-xs font-semibold">
+                    Pixels
+                    <span class="inline-flex items-baseline h-3 w-3">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g> <circle cx="12" cy="12" data-name="--Circle" fill="none" id="_--Circle" r="10" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle> <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="12" y2="16"></line> <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="8" y2="8"></line> </g></svg>
+                    </span>
+                </p>
+                <input class="input input-primary text-sm w-16" id="input_minpx" type="number" value="30" min="2"/>
+            </div>
+        </div>
+    </div> -->
+
+
+
+    <!-- SVG modal: -->
+    {{ macros.modal('modal_svg')}}
+
+    <!-- Image grid: -->
+    <div id="image_grid" class="hidden rounded-3xl py-4 gap-x-4 md:gap-x-4 columns-1 columns-2 md:columns-2 md:columns-3 lg:columns-3 lg:columns-4">
+        <div class="break-inside-avoid-column group mb-8 relative" id="image_input">
+            <div class="absolute top-4 left-4 badge badge-secondary rounded-lg">Uploaded image</div>
+            <img class="object-contain rounded-box" id="imgInput" />
+            <div class="px-2 py-2 font-light text-sm">
+                <span id="img_shape"></span> pixels<br/>(aspect ratio 
+                <span id="img_ar"></span>)
+            </div>
+        </div>
+         {% for id in ['pixels','bricks','grayscale','circles','squares'] %}
+            {{ macros.image_card(id) }}
+         {% endfor %}
+
+    </div>
+
+</div>
+{% include "js_upload.html" %}
+{% endblock content %}

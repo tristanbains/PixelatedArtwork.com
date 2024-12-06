@@ -1,0 +1,279 @@
+
+<div class="md:flex md:flex-row min-h-screen justify-center items-center gap-8 bg-yellow-50">
+    <!-- Controls etc. -->
+    <div class="md:max-w-screen-sm py-4 bg-neutral-content p-8 rounded-box">
+        <h1 class="font-semibold text-3xl">
+            Convert your image into <span class="text-secondary font-bold">Pixel Art</span>
+        </h1>
+        <p class="pt-4">In the browser, free download SVG and PNG</p>
+        
+        
+    </div>
+    <div class="hidden">
+        <h2 class="font-semibold text-md md:text-xl mt-16 ml-2"><span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 1</span> Upload your own image </h2>
+        <div><input type="file" class="file-input file-input-bordered file-input-primary file-input-md w-full max-w-xs mt-4" id="fileInputx"></div>
+        <h2 class="font-semibold text-md md:text-xl mt-16 ml-2"><span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 2</span> Pick your output format </h2>
+    </div>
+    
+    <!-- Example images -->
+    <div class="flex gap-4">
+        <div class="w-32 gap-4 mt-4">
+            <div class="h-40 bg-yellow-500">Img 1</div>
+            <div class="h-32 bg-yellow-500 mt-4">Img 2</div>
+        </div>
+        <div class="w-40 gap-4">
+            <div class="h-32 bg-yellow-500">Img 3</div>
+            <div class="h-48 bg-yellow-500 mt-4">Img 4</div>
+        </div>
+    </div>
+</div>
+
+<!-- <svg fill="#000000" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M112,44H48a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,112,44Zm-4,64H52V52h56ZM208,44H144a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,208,44Zm-4,64H148V52h56Zm-92,32H48a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,112,140Zm-4,64H52V148h56Zm100-64H144a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,208,140Zm-4,64H148V148h56Z"></path> </g></svg> -->
+
+
+<div class="bottom-60 sticky mx-auto relative grid grid-cols-3 px-2 gap-x-2 w-[440px] place-items-center bg-neutral-content rounded-box shadow-xl">
+    <div class="text-base-300 font-semibold2 text-xs pt-2">FILE</div>
+    <div class="text-base-300 font-semibold2 text-xs pt-2">OUTPUT</div>
+    <div class="text-base-300 font-semibold2 text-xs pt-2">QUICK CONTROLS</div>
+    <div id="bm1" class="peer/bm1 z-50 h-10 my-2 w-full bg-red-50 px-2 py-1 rounded-lg flex items-center justify-center group relative transition duration-300">
+        <div class="w-6 h-6 ease absolute left-5 translate-x-0 opacity-100 transition duration-300 group-hover:-translate-x-full group-hover:opacity-0">
+            <svg class="stroke-current stroke-2" fill="currentColor" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><g> <path d="M112,44H48a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,112,44Zm-4,64H52V52h56ZM208,44H144a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,208,44Zm-4,64H148V52h56Zm-92,32H48a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,112,140Zm-4,64H52V148h56Zm100-64H144a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,208,140Zm-4,64H148V148h56Z"></path> </g></svg>
+        </div>
+        <div class="ease translate-x-0 transition duration-300 group-hover:-translate-x-4">Upload file</div>
+        <div class="w-6 h-6 ease absolute right-5 translate-x-full opacity-0 transition duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+            <svg class="stroke-current stroke-2" fill="currentColor" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><g> <path d="M112,44H48a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,112,44Zm-4,64H52V52h56ZM208,44H144a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,208,44Zm-4,64H148V52h56Zm-92,32H48a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,112,140Zm-4,64H52V148h56Zm100-64H144a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,208,140Zm-4,64H148V148h56Z"></path> </g></svg>
+        </div>
+    </div>
+    <div id="bm2" class="peer/bm2 z-50 h-10 my-2 w-full hover:text-base-100 hover:bg-base-content px-2 py-1 rounded-lg flex justify-center items-center gap-1 cursor-pointer tooltip tooltip-bottom" data-tip="Adjust the desired output">
+        <!-- <div class="text-sm">OUTPUT</div> -->
+        <div class="w-6 h-6">
+            <svg class="stroke-current stroke-2" fill="currentColor" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><g> <path d="M112,44H48a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,112,44Zm-4,64H52V52h56ZM208,44H144a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,208,44Zm-4,64H148V52h56Zm-92,32H48a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,112,140Zm-4,64H52V148h56Zm100-64H144a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,208,140Zm-4,64H148V148h56Z"></path> </g></svg>
+        </div>
+        <div class="text-lg font-semibold"><span>35</span> x <span>25</span></div>
+    </div>
+    <div id="bm3" class="peer/bm3 z-50 h-10 my-2 w-full flex items-center justify-center gap-2">
+        <div class="h-10 w-10 rounded-lg bg-gray-100 hover:text-base-100 hover:bg-base-content tooltip tooltip-bottom" data-tip="Swap width and height">R</div>
+        <div class="h-10 w-10 rounded-lg bg-gray-100 hover:text-base-100 hover:bg-base-content tooltip tooltip-bottom" data-tip="Use aspect ratio of the uploaded image">C</div>
+    </div>
+
+
+    <div id="bmi2" onmouseover="hover_div('bm2')" onmouseleave="unhover_div('bm2')" class="z-40 w-[460px] invisible absolute pb-16 px-[10px] -bottom-[10px] peer-hover/bm2:visible hover:visible col-span-3 bg-neutral-content shadow-xl rounded-box cursor-pointer">
+        <div class="bg-yellow-100 ">BI1</div>
+        <div class="bg-yellow-100">BI2</div>
+        <div class="py-2 transition ease-in-out hover:scale-x-[0.95] hover:bg-gray-100">BI3</div>
+        <div class="bg-neutral-content py-2">BI4</div>
+    </div>
+    <div id="bm13" class="z-40 invisible absolute peer-hover/bm3:visible hover:visible">CI</div>
+</div>
+
+
+<script>
+    function hover_div(divToggle){
+        dt = document.getElementById(divToggle);
+        dt.classList.add('bg-base-content');
+        dt.classList.add('text-base-100');
+    }
+    function unhover_div(divToggle){
+        dt = document.getElementById(divToggle);
+        dt.classList.remove('bg-base-content');
+        dt.classList.remove('text-base-100');
+    }
+</script>
+
+
+
+
+<div class="bottom-20 sticky grid grid-cols-3 shadow-xl place-items-center gap-x-4 h-20 w-[440px] bg-neutral-content  rounded-box mx-auto relative">
+    
+    <div id="menu1" class="peer/menu1 cursor-pointer w-32 h-12 z-50  my-2">
+        <div class="flex gap-x-1 bg-base-200 items-center justify-center font-semibold text-gray-900 px-2 py-2 rounded-xl hover:bg-neutral hover:text-base-100">
+            <div>X</div>
+            <div>Menu 1</div>
+            <div>y</div>
+        </div>
+    </div>
+    <div id="menu2" class="peer/menu2 cursor-pointer w-32 h-12 z-50  my-2">
+        <div class="flex gap-x-1 bg-base-200 items-center justify-center font-semibold text-gray-900 px-2 py-2 rounded-xl hover:bg-neutral hover:text-base-100">
+            <div>X</div>
+            <div>Menu 2</div>
+            <div>y</div>
+        </div>
+        
+    </div>
+    <div id="menu3" class="peer/menu3 cursor-pointer w-32 h-12 z-50  my-2">
+        <div class="flex gap-x-1 bg-base-200 items-center justify-center font-semibold text-gray-900 px-2 py-2 rounded-xl hover:bg-neutral hover:text-base-100">
+            <div>X</div>
+            <div>Menu 3</div>
+            <div>y</div>
+        </div>
+    </div>
+    <div id="item2" class="peer/item2 invisible absolute z-40 peer-hover/menu2:visible hover:visible col-span-3 bottom-10 p-4 bg-red-300 w-[460px] rounded-box shadow-xl">
+      <p>Menu items 2</p>
+      <p>Some more text</p>
+    </div>
+    <div  id="item3" class="invisible absolute z-40 peer-hover/menu3:visible hover:visible col-span-3 bottom-10 p-4 bg-neutral-content w-full rounded-box">
+      <p>Menu items 3</p>
+      <button class="px-2 py-1 rounded-lg m-2 bg-red-50">Button</button>
+      <p>Some more text</p>
+    </div>
+</div>
+
+
+
+
+<!-- <div class="hidden bottom-20 sticky mx-auto group relative cursor-pointer py-2 w-72">
+
+    <div class="flex items-center justify-between space-x-5 bg-white px-4">
+        <a class="menu-hover my-2 py-2 text-base font-medium text-black lg:mx-4" onclick="">
+            Choose Day
+        </a>
+        <a class="menu-hover my-2 py-2 text-base font-medium text-black lg:mx-4" onclick="">
+            Choose Day 2
+        </a>
+    </div>
+
+    <div class="invisible absolute z-50 flex w-full flex-col bg-gray-100 py-1 px-4 text-gray-800 shadow-xl group-hover:visible">
+        <a class="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2">
+            Sunday
+        </a>
+        <a class="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2">
+            Monday
+        </a>
+        <a class="my-2 block border-b border-gray-100 py-1 font-semibold text-gray-500 hover:text-black md:mx-2">
+            Tuesday
+        </a>
+    </div>
+</div> -->
+
+
+<!-- <div class="bottom-20 z-10 sticky mx-auto hidden">
+    <div id="menu_output" class="bg-yellow-300 hidden z-10">
+        HIDDEN
+
+    </div>
+    <div class="w-96 menu menu-vertical sm:menu-horizontal place-items-center bg-neutral-content rounded-box px-4 shadow-lg gap-4 justify-items-center">
+        
+        <div class="">
+            <span class="text-xs text-neutral group-hover:text-base-100">CHOOSE FILE</span><br>
+            <span class="text-lg text-secondary font-semibold group-hover:text-base-100 group-hover:hidden">No file selected</span>
+            <span class="text-lg text-secondary font-semibold group-hover:text-base-100 group-hover:block hidden">Click to select file</span>
+        </div>
+        <div id="menu_button_output" class="bg-green-200" onmouseover="toggleDiv('menu_output',this)" onmouseout="toggleDiv('menu_output',this)">Menu 2</div>
+        
+        <div>Menu 3</div>
+        
+        
+    </div>
+</div>
+
+<script>
+    function toggleDiv(divId, triggerDiv) {
+    const div = document.getElementById(divId);
+    const isHovering = div.contains(document.elementFromPoint(event.clientX, event.clientY));
+    if (isHovering || triggerDiv !== div) {
+        div.classList.toggle('hidden');
+        triggerDiv.classList.toggle('text-red-200');
+    }
+}
+</script> -->
+
+<div class="hidden bottom-4 inset-x-0 sticky flex justify-center">
+    <div class=" relative">
+        
+        <ul class="z-[1] menu menu-vertical sm:menu-horizontal bg-neutral-content rounded-box px-4 shadow-lg">
+            
+            <li><a class="group hover:bg-base-content">
+                <div tabindex="0" role="button" class="">
+                    <span class="text-xs text-neutral group-hover:text-base-100">CHOOSE FILE</span><br>
+                    <span class="text-lg text-secondary font-semibold group-hover:text-base-100 group-hover:hidden">No file selected</span>
+                    <span class="text-lg text-secondary font-semibold group-hover:text-base-100 group-hover:block hidden">Click to select file</span>
+                </div>
+            </a></li>
+            <li><a>
+                <div class="">
+                    <span class="text-xs text-neutral ">OUTPUT</span><br>
+                    <label for="my_modal_7" class="btn btn-ghost text-lg text-secondary font-semibold">
+                        <span>35</span> x <span>25</span>
+                    </label>
+                </div>
+            </a></li>
+            <li><a>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </a></li>
+          </ul>
+
+          
+    </div>
+    
+</div>
+
+<div class="md:flex items-center gap-8 justify-center p-10">
+    <div class="py-4 bg-neutral-content p-8 rounded-box justify-center md:w-1/2 max-w-screen-sm">
+        <h1 class="font-semibold text-3xl">Convert any image into <span class="text-secondary font-bold">Pixel Art</span></h1>
+        <h2 class="font-semibold text-md md:text-xl mt-8 ml-2"><span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 1</span> Upload your own image </h2>
+        <div><input type="file" class="file-input file-input-bordered file-input-primary file-input-md w-full max-w-xs mt-4" id="fileInputx"></div>
+        <h2 class="font-semibold text-md md:text-xl ml-2 mt-12"><span class="bg-secondary text-sm md:text-lg text-base-100 py-2 px-3 -ml-2 mr-1 rounded-full">Step 2</span> Pick your favorite output format </h2>
+        <p class="px-1 pb-4 pt-4 text-sm md:text-base font-light max-w-96"> Define width and height, or alternatively pick the detail level and aspect ratio (Click below to edit) </p>
+
+        <div class="stats stats-vertical lg:stats-horizontal shadow">
+            <div class="stat">
+              <div class="stat-title">Downloads</div>
+              <div class="stat-value">31K</div>
+              <div class="stat-desc">Jan 1st - Feb 1st</div>
+            </div>
+          
+            <div class="stat">
+              <div class="stat-title">New Users</div>
+              <div class="stat-value">4,200</div>
+              <div class="stat-desc">↗︎ 400 (22%)</div>
+            </div>
+          
+            <div class="stat">
+              <div class="stat-title">New Registers</div>
+              <div class="stat-value">1,200</div>
+              <div class="stat-desc">↘︎ 90 (14%)</div>
+            </div>
+          </div>
+    </div>
+    
+    <div class=" flex justify-center md:w-1/2">
+        <div class="w-48 gap-4">
+            <div class="relative">
+                <img class="rounded-box" src="{{ url_for('static', filename='images/svg/vermeer_pearl_pixels_25x30_pixelatedartwork_com.svg') }}" alt="Vermeer pixelated artwork">
+                <div class="absolute bottom-4 left-4 badge badge-secondary badge-lg">
+                    Pixels style 25x30
+                </div>
+            </div>
+            <div class="relative pt-4">
+                <img class="rounded-box" src="{{ url_for('static', filename='images/svg/paris-street_pixels_35x35_pixelatedartwork_com.svg') }}" alt="Paris street pixelated artwork">
+                <div class="absolute bottom-4 left-4 badge badge-secondary badge-lg">
+                    Pixels style 35x35
+                </div>
+            </div>
+        </div>
+
+        <div class="pl-4 w-80">
+            <div class="relative ">
+                <img class="rounded-box" src="{{ url_for('static',filename='images/svg/angkor-wat_bricks_38x25_pixelatedartwork_com.svg') }}" alt="Angkor Wat pixelated artwork">
+            </div>
+            <div class="relative pt-4">
+                <img class="rounded-box" src="{{ url_for('static', filename='images/svg/usa_pixels_38x25_pixelatedartwork_com.svg') }}" alt="Vermeer pixelated artwork">
+                
+            </div>
+            
+        </div>
+        
+        
+    </div>
+</div>

@@ -1,0 +1,959 @@
+<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script> -->
+<script>
+    
+    // ------ Site-wide variables: ------
+
+    var file_uploaded,file_uploaded_name
+    
+    var w_current = 40;
+    var w_updated = w_current;
+    var w_uploaded = 0;
+    var h_current = 30;
+    var h_updated = h_current;
+    var h_uploaded = 0;
+
+    var dl_current = Math.min(h_current,w_current);
+    var dl_updated = dl_current;
+    var dl_uploaded = dl_current;
+    var ar_current = w_current/h_current;
+    var ar_updated = ar_current;
+    var ar_uploaded = ar_current;
+
+    var dict_tf_array = {};
+    var dict_svg = {};
+
+    var px_size = 0,
+        nx = 0,
+        ny = 0,
+        pct_used = 0,
+        ar_input = 1;
+    
+    var boolean_uploaded = false;
+
+    // const array_formats = ['1_1','4_3'];
+    const array_formats = ['1_1','4_3','7_5','16_9'];
+    
+    // ------ User controls: ------
+    
+    input_file_welcome = document.getElementById('input_file_welcome');
+    input_file_bm = document.getElementById('input_file_bm');
+    input_file_welcome.removeAttribute('title');
+    input_file_bm.removeAttribute('title');
+
+    input_w = document.getElementById('input_w');
+    input_h = document.getElementById('input_h');
+    input_ar = document.getElementById('input_ar');
+    input_dl = document.getElementById('input_dl');
+
+    button_apply_wh = document.getElementById('button_apply_wh');
+    button_apply_ardl = document.getElementById('button_apply_ardl');
+    button_apply_rotate = document.getElementById('button_apply_rotate');
+    button_apply_copy = document.getElementById('button_apply_copy');
+
+    div_welcome = document.getElementById('div_welcome');
+    div_image_grid = document.getElementById('div_image_grid');
+    div_bm = document.getElementById('bm');
+
+    span_filename = document.getElementById('span_filename');
+    div_wxh_bm = document.getElementById('div_wxh_bm');
+    span_wxh_wh = document.getElementById('span_wxh_wh');
+    span_wxh_ardl = document.getElementById('span_wxh_ardl');
+    span_dl_formats = document.getElementById('span_dl_formats');
+
+    img_desired = document.getElementById('img_desired');
+    span_wxh_desired = document.getElementById('span_wxh_desired');
+    img_uploaded = document.getElementById('img_uploaded');
+    span_wxh_uploaded = document.getElementById('span_wxh_uploaded');
+
+    span_wxh_desired_explanation = document.getElementById('span_wxh_desired_explanation');
+    
+    img_circles = document.getElementById('img_circles');
+    span_wxh_circles = document.getElementById('span_wxh_circles');
+    img_squares = document.getElementById('img_squares');
+    span_wxh_squares = document.getElementById('span_wxh_squares');
+    img_bricks = document.getElementById('img_bricks');
+    span_wxh_bricks = document.getElementById('span_wxh_bricks');
+
+    img_1_1 = document.getElementById('img_1_1');
+    span_wxh_1_1 = document.getElementById('span_wxh_1_1');
+    img_4_3 = document.getElementById('img_4_3');
+    span_wxh_4_3 = document.getElementById('span_wxh_4_3');
+
+    carousel_desired = document.getElementById('carousel_desired');
+    carousel_styles = document.getElementById('carousel_styles');
+    carousel_formats = document.getElementById('carousel_formats');
+
+    img_carousel_example = document.getElementById('img_carousel_example');
+
+    // ------ Listeners: ------
+
+
+    setInterval(() => {
+        const images = document.querySelectorAll('.img_example');
+        images.forEach(image => {
+            image.classList.toggle('opacity-0');
+            image.classList.toggle('opacity-100');
+            });
+        }, 3000);
+
+    input_w.onchange = function(){
+        // w_updated = input_w.value
+        button_apply_wh.classList.remove('btn-disabled');
+        span_wxh_wh.innerHTML = `${input_w.value}x${input_h.value}`;
+    };
+    input_h.onchange = function(){
+        button_apply_wh.classList.remove('btn-disabled');
+        span_wxh_wh.innerHTML = `${input_w.value}x${input_h.value}`;
+    };
+    input_ar.onchange = function(){
+        button_apply_ardl.classList.remove('btn-disabled');
+        w_ardl = (input_ar.value>1) ? Math.ceil(input_ar.value*input_dl.value) : input_dl.value ;
+        h_ardl = (input_ar.value>1) ? input_dl.value : Math.ceil(input_dl.value/input_ar.value) ;
+        span_wxh_ardl.innerHTML = `${w_ardl}x${h_ardl}`;
+    };
+    input_dl.onchange = function(){
+        button_apply_ardl.classList.remove('btn-disabled');
+        w_ardl = (input_ar.value>1) ? Math.ceil(input_ar.value*input_dl.value) : input_dl.value ;
+        h_ardl = (input_ar.value>1) ? input_dl.value : Math.ceil(input_dl.value/input_ar.value) ;
+        span_wxh_ardl.innerHTML = `${w_ardl}x${h_ardl}`;
+    };
+
+    button_apply_wh.onclick = function(){
+        w_current = input_w.value;
+        h_current = input_h.value;
+        updateDefaults(w_current,h_current);
+        pressApply();
+    };
+    button_apply_ardl.onclick = function(){
+        [w,h] = span_wxh_ardl.innerHTML.split('x').map(Number);
+        w_current = w;
+        h_current = h;
+        updateDefaults(w_current,h_current);
+        pressApply();
+    };
+    button_apply_rotate.onclick = function(){
+        [w,h] = div_wxh_bm.innerHTML.split('x').map(Number);
+        w_current = h;
+        h_current = w;
+        updateDefaults(w_current,h_current);
+        pressApply();
+    };
+    button_apply_copy.onclick = function(){
+        // w_current = w_uploaded;
+        // h_current = h_uploaded;
+        w_current = (ar_uploaded>1) ? Math.ceil(dl_current*ar_uploaded) : dl_current ;
+        h_current = (ar_uploaded>1) ? dl_current : Math.ceil(dl_current/ar_uploaded) ;
+        updateDefaults(w_current,h_current);
+        pressApply();
+    };
+
+    // ------ Listener functions: ------
+
+    const updateFileUploaded = (fileInput) => {
+        file_uploaded = fileInput.files[0];
+        file_uploaded_name = file_uploaded['name'];
+        // div_welcome.classList.add('hidden')
+        
+        div_image_grid.classList.remove('hidden');
+        div_bm.classList.remove('hidden');
+        div_welcome.classList.remove('min-h-screen')
+
+        // top_div = div_image_grid.getBoundingClientRect().top;
+        // window.scrollTo({top:top_div+window.scrollY-500,behavior:'smooth'});
+        // div_image_grid.scrollIntoView({ behavior: 'smooth' });
+        span_filename.innerHTML=file_uploaded_name;
+        
+    };
+
+    input_file_welcome.addEventListener('change', () => {
+        updateFileUploaded(input_file_welcome);
+        // updateSVG();
+        pressApply();
+    });
+
+    input_file_bm.addEventListener('change', () => {
+        updateFileUploaded(input_file_bm);
+        // updateSVG();
+        pressApply();
+    });
+
+    async function pressApply(){
+        // updateDefaults();
+        
+        await updateSVG();
+        await updateSVG_styles();
+        await updateSVG_ars();
+        updateGrid();
+        // displayOutputs();
+    };
+
+    function updateDefaults(w,h){
+        span_wxh_wh.innerHTML = `${w}x${h}`;
+        span_wxh_ardl.innerHTML = `${w}x${h}`;
+        div_wxh_bm.innerHTML = `${w}x${h}`;
+        span_wxh_desired.innerHTML = `${w}x${h}`;
+        span_wxh_desired_explanation.innerHTML = `${w}x${h}`;
+        input_w.value = w;
+        input_h.value = h;
+        input_dl.value = Math.min(w,h);
+        input_ar.value = Math.round(1000*w/h)/1000;
+        button_apply_wh.classList.add('btn-disabled');
+        button_apply_ardl.classList.add('btn-disabled');
+        ar_current = Math.ceil(1000*w/h)/1000;
+        dl_current = Math.min(w,h);
+        w_current = w;
+        h_current = h;
+        span_dl_formats.innerHTML=`${dl_current}`;
+    };
+
+
+    function updateGrid(ar=ar_current){
+        el = document.getElementById('div_image_grid');
+        // if(ar>1){ //wide -> less columns
+            
+        // } else {
+            
+        // }
+        carousel_formats.querySelector('.carousel-item:first-child').scrollIntoView();
+        carousel_styles.querySelector('.carousel-item:first-child').scrollIntoView();
+        carousel_desired.querySelector('.carousel-item:first-child').scrollIntoView();
+        top_div = div_image_grid.getBoundingClientRect().top;
+        window.scrollTo({top:top_div+window.scrollY-150,behavior:'smooth'});
+    };
+
+    // ------ Model: ------
+
+
+    // function findMostFrequentTuple(tuples) {
+    //     const tupleCounts = {};
+    //     tuples.forEach(tuple => {
+    //         const tupleString = tuple.toString();
+    //         tupleCounts[tupleString] = (tupleCounts[tupleString] || 0) + 1;
+    //     });
+    //     let maxCount = 0;
+    //     let mostFrequentTuple = null;
+    //     for (const tupleString in tupleCounts) {
+    //         if (tupleCounts[tupleString] > maxCount) {
+    //         maxCount = tupleCounts[tupleString];
+    //         mostFrequentTupleString = tupleString;
+    //         }
+    //     }
+    //     mostFrequentTuple = mostFrequentTupleString.split(',').map(Number);
+    //     return mostFrequentTuple;
+    // }
+
+
+    // async function pixelate(ar=ar_current,dl=dl_current,id_out='pixels',method='avg'){
+    //     if (!file_uploaded) {
+    //         return;
+    //     }
+    //     const img = new Image();
+    //     img.src = URL.createObjectURL(file_uploaded);
+    //     await new Promise(resolve => img.onload = resolve);
+    //     // Resize the image using canvas
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     canvas.width = img.width;
+    //     canvas.height = img.height;
+    //     ctx.drawImage(img, 0, 0);
+    //     tf.tidy(() => {
+    //         let tf_image = tf.browser.fromPixels(canvas, 3);
+    //         // const tf_image = tf.browser.fromPixels(canvas, 4);
+    //         w_uploaded = tf_image.shape[1];
+    //         h_uploaded = tf_image.shape[0];
+    //         ar_uploaded = w_uploaded/h_uploaded;
+    //         ar_uploaded_3 = Math.round(1000*ar_uploaded)/1000
+    //         // If no image has been uploaded yet, use the aspect ratio of the uploaded image
+    //         if(!boolean_uploaded){
+    //             ar = ar_uploaded_3;
+    //             dl = dl_current;
+    //             w_current = (ar>1) ? Math.ceil(dl*ar) : dl ;
+    //             h_current = (ar>1) ? dl : Math.ceil(dl/ar) ;
+    //             updateDefaults(w_current,h_current);
+    //             boolean_uploaded = true;
+    //         }     
+    //         if(ar>1){
+    //             ny = parseInt(dl);
+    //             nx = Math.ceil(dl*ar);
+    //         } else {
+    //             nx = parseInt(dl);
+    //             ny = Math.ceil(dl/ar);
+    //         }
+    //         px_size = Math.floor(Math.min(w_uploaded/nx,h_uploaded/ny));
+    //         // For center cropping:
+    //         pl = Math.floor((w_uploaded-nx*px_size)/2);
+    //         pt = Math.floor((h_uploaded-ny*px_size)/2);
+    //         ml = Number.isInteger((w_uploaded-nx*px_size)/2) ? 0 : 1;
+    //         mt = Number.isInteger((h_uploaded-ny*px_size)/2) ? 0 : 1;
+            
+    //         let tf_image_slice = tf_image.slice([pt,pl,0],[ny*px_size,nx*px_size,3]);
+    //         if(method='avg'){
+    //             let tf_image_slice_batch = tf.expandDims(tf_image_slice.toFloat(),0);
+    //             let tf_image_avg = tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}).apply(tf_image_slice_batch);
+    //             let tf_image_model = tf_image_avg;
+    //             let tf_image_out = tf_image_model.squeeze().toInt();
+    //             // const img_output_px = tf.browser.toPixels(tf_image_model);
+    //             dict_tf_array[id_out] = tf_image_out.arraySync();
+
+    //         } else if(method=='mode'){
+    //             let array_mode = tf.zeros([ny,nx,3]).arraySync();
+    //             for (let ih=0;ih<ny;ih++){
+    //                 for (let iw=0;iw<nx;iw++){
+    //                     const tf_mode_slice = tf_image_slice.slice([ih*px_size,iw*px_size,0],[px_size,px_size,3]);
+    //                     const tf_mode_slice_reshaped = tf.reshape(tf_mode_slice,[-1,3]);
+    //                     array_mode[ih][iw] = findMostFrequentTuple(tf_mode_slice_reshaped.arraySync());
+    //                 }
+    //             }
+
+    //             dict_tf_array[id_out] = array_mode;
+    //         }
+            
+    //         // let tf_image_slice_batch = tf.expandDims(tf_image_slice.toFloat(),0);
+    //         // let tf_image_avg = tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}).apply(tf_image_slice_batch);
+            
+    //         // let tf_image_model = tf_image_avg;
+    //         // let tf_image_out = tf_image_model.squeeze().toInt();
+    //         // dict_tf_array[id_out] = tf_image_out.arraySync();
+
+
+    //     })
+    // }
+
+    // async function pixelate2(ar=ar_current,dl=dl_current,id_out='pixels',method='avg'){
+    //     if (!file_uploaded) {
+    //         return;
+    //     }
+    //     const img = new Image();
+    //     img.src = URL.createObjectURL(file_uploaded);
+    //     await new Promise(resolve => img.onload = resolve);
+    //     // Resize the image using canvas
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     canvas.width = img.width;
+    //     canvas.height = img.height;
+    //     ctx.drawImage(img, 0, 0);
+    //     tf.tidy(() => {
+    //         let tf_image = tf.browser.fromPixels(canvas, 3);
+    //         // const tf_image = tf.browser.fromPixels(canvas, 4);
+    //         w_uploaded = tf_image.shape[1];
+    //         h_uploaded = tf_image.shape[0];
+    //         ar_uploaded = w_uploaded/h_uploaded;
+    //         ar_uploaded_3 = Math.round(1000*ar_uploaded)/1000
+    //         // If no image has been uploaded yet, use the aspect ratio of the uploaded image
+    //         if(!boolean_uploaded){
+    //             ar = ar_uploaded_3;
+    //             dl = dl_current;
+    //             w_current = (ar>1) ? Math.ceil(dl*ar) : dl ;
+    //             h_current = (ar>1) ? dl : Math.ceil(dl/ar) ;
+    //             updateDefaults(w_current,h_current);
+    //             boolean_uploaded = true;
+    //         } //else {
+    //         //     ar = w/h;
+    //         //     dl = Math.min(w,h);
+    //         // }
+    //         // Operations for cropping img_input
+    //         // ar_input = w_/h;        
+    //         if(ar>1){
+    //             ny = parseInt(dl);
+    //             nx = Math.ceil(dl*ar);
+    //         } else {
+    //             nx = parseInt(dl);
+    //             ny = Math.ceil(dl/ar);
+    //         }
+    //         // px_size = Math.floor(Math.min(w/nx,h/ny));
+    //         px_size = Math.floor(Math.min(w_uploaded/nx,h_uploaded/ny));
+    //         // For center cropping:
+    //         // pl = Math.floor((w-nx*px_size)/2);
+    //         // pt = Math.floor((h-ny*px_size)/2);
+    //         // ml = Number.isInteger((w-nx*px_size)/2) ? 0 : 1;
+    //         // mt = Number.isInteger((h-ny*px_size)/2) ? 0 : 1;
+    //         pl = Math.floor((w_uploaded-nx*px_size)/2);
+    //         pt = Math.floor((h_uploaded-ny*px_size)/2);
+    //         ml = Number.isInteger((w_uploaded-nx*px_size)/2) ? 0 : 1;
+    //         mt = Number.isInteger((h_uploaded-ny*px_size)/2) ? 0 : 1;
+            
+    //         let tf_image_slice = tf_image.slice([pt,pl,0],[ny*px_size,nx*px_size,3]);
+
+    //         let tf_image_slice_batch = tf.expandDims(tf_image_slice.toFloat(),0);
+    //         let tf_image_avg = tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}).apply(tf_image_slice_batch);
+    //         // let tf_image_mode = modePooling2D(tf_image_slice_batch,px_size,px_size);
+    //         // let tf_image_max = tf.layers.maxPooling2d({poolSize:px_size,strides:px_size,padding:'valid'}).apply(tf_image_slice_batch);
+    //         // let tf_image_min = tf.neg(tf.layers.maxPooling2d({poolSize:px_size,strides:px_size,padding:'valid'}).apply(tf.neg(tf_image_slice_batch)));
+    //         // console.log(method)
+    //         // if(method=='minmax'){
+    //             // console.log(method);
+    //             // let diffMaxAvg = tf.abs(tf.sub(tf_image_max, tf_image_avg));
+    //             // let diffMinAvg = tf.abs(tf.sub(tf_image_min, tf_image_avg));
+    //             // let condition = tf.less(diffMinAvg, diffMaxAvg);
+    //         // } else if(method=='minmax2'){
+    //         //     console.log(method)
+    //         //     // Calculate the squared differences
+    //         //     let squaredDiffMaxAvg = tf.square(tf.sub(tf_image_max, tf_image_avg));
+    //         //     let squaredDiffMinAvg = tf.square(tf.sub(tf_image_min, tf_image_avg));
+
+    //         //     // Sum the squared differences across RGB channels
+    //         //     let sumSquaredDiffMaxAvg = tf.sum(squaredDiffMaxAvg, axis=-1, keepdims=true);
+    //         //     let sumSquaredDiffMinAvg = tf.sum(squaredDiffMinAvg, axis=-1, keepdims=true);
+    //         //     // Compare the sums and select the closer image
+    //         //     let condition = tf.less(sumSquaredDiffMinAvg, sumSquaredDiffMaxAvg);
+
+    //         // }
+    //         // let tf_image_model = tf.where(condition, tf_image_min, tf_image_max);
+    //         let tf_image_model = tf_image_avg;
+    //         let tf_image_out = tf_image_model.squeeze().toInt();
+    //         // const img_output_px = tf.browser.toPixels(tf_image_model);
+    //         dict_tf_array[id_out] = tf_image_out.arraySync();
+
+    //         // return(`${w_uploaded}x${h_uploaded}`)
+    //         // model_px = createModel(h=tf_image.shape[0],w=tf_image.shape[1],ar=ar,dl=dl);
+    //         // const tf_image_model = model_px.predict(tf_image.expandDims(0)).squeeze().round().cast('int32');
+    //         // const img_output_px = tf.browser.toPixels(tf_image_model);
+    //         // dict_tf_array[id_out] = tf_image_model.arraySync();
+
+    //     })
+    // }
+
+    // // Deprecated:
+    // function createModel(h,w,ar,dl,pooling='average'){
+    //     ar_input = w/h;        
+    //     if(ar>1){
+    //         ny = parseInt(dl);
+    //         nx = Math.ceil(dl*ar);
+    //     } else {
+    //         nx = parseInt(dl);
+    //         ny = Math.ceil(dl/ar);
+    //     }
+    //     px_size = Math.floor(Math.min(w/nx,h/ny));
+    //     // For center cropping:
+    //     pl = Math.floor((w-nx*px_size)/2);
+    //     pt = Math.floor((h-ny*px_size)/2);
+    //     ml = Number.isInteger((w-nx*px_size)/2) ? 0 : 1;
+    //     mt = Number.isInteger((h-ny*px_size)/2) ? 0 : 1;
+    //     const model = tf.sequential();
+    //     model.add(tf.layers.inputLayer({batchInputShape:[1,h,w,3]}));
+    //     model.add(tf.layers.cropping2D({cropping:[[pt,pt+mt],[pl,pl+ml]]}));
+    //     model.add(tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}));
+    //     // if(pooling=='average'){
+    //     //     model.add(tf.layers.averagePooling2d({poolSize:px_size,strides:px_size,padding:'valid'}));
+    //     // } else if(pooling=='max'){
+    //     //     model.add(tf.layers.maxPooling2d({poolSize:px_size,strides:px_size,padding:'valid'}));
+    //     // }
+        
+    //     // model.add(tf.layers.cropping2D({cropping:[[ch,ch+dh],[cw,cw+dw]]}));
+    //     // model.add(tf.layers.averagePooling2d({poolSize:px,strides:px,padding:'valid'}));
+    //     // model.add(new CustomPooling2D({poolSize:px_size, strides:px_size, padding:'valid'}));
+
+
+    //     return model;
+    // };
+
+    // tf.setBackend('webgl');
+    // tf.ENV.set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
+
+    // Read the file_uploaded and convert into tf array in dict_tf_array[id_out]
+    // function inference2(ar=ar_current,dl=dl_current,id_out='pixels'){
+    //     return new Promise((resolve,reject) => {
+    //         if(file_uploaded){
+    //             const img = new Image();
+    //             img.src = URL.createObjectURL(file_uploaded);
+    //             // Wait for the image to load before processing
+    //             img.onload = () => {
+    //                 const tf_image = tf.browser.fromPixels(img, 3);
+    //                 w_uploaded = tf_image.shape[1];
+    //                 h_uploaded = tf_image.shape[0];
+    //                 ar_uploaded = w_uploaded/h_uploaded;
+    //                 ar_uploaded_3 = Math.round(1000*ar_uploaded)/1000
+    //                 // If no image has been uploaded yet, use the aspect ratio of the uploaded image
+    //                 if(!boolean_uploaded){
+    //                     ar = ar_uploaded_3;
+    //                     dl = dl_current;
+    //                     w_current = (ar>1) ? Math.ceil(dl*ar) : dl ;
+    //                     h_current = (ar>1) ? dl : Math.ceil(dl/ar) ;
+    //                     updateDefaults(w_current,h_current);
+    //                     boolean_uploaded = true;
+    //                 }
+    //                 model_px = createModel(h=tf_image.shape[0],w=tf_image.shape[1],ar=ar,dl=dl);
+    //                 const tf_image_model = model_px.predict(tf_image.expandDims(0)).squeeze().round().cast('int32');
+    //                 const img_output_px = tf.browser.toPixels(tf_image_model);
+    //                 dict_tf_array[id_out] = tf_image_model.arraySync();
+                    
+    //                 tf_image.dispose();
+    //                 tf_image_model.dispose();
+    //                 model_px.dispose();
+    //                 resolve();
+                    
+    //                 // console.log(`w_current:${w_current} h_current:${h_current} ar_current:${ar_current} dl_current:${dl_current}`)
+    //                 // console.log(`w_uploaded:${w_uploaded} h_uploaded:${h_uploaded} ar_uploaded:${ar_uploaded}`)
+    //             }
+    //         }
+    //     })
+    // };
+
+    // Deprecated:
+    // async function inference(ar=ar_current,dl=dl_current,id_out='pixels'){
+    //     if (!file_uploaded) {
+    //         return;
+    //     }
+    //     const img = new Image();
+    //     img.src = URL.createObjectURL(file_uploaded);
+    //     await new Promise(resolve => img.onload = resolve);
+    //     // Resize the image using canvas
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     canvas.width = img.width;
+    //     canvas.height = img.height;
+    //     ctx.drawImage(img, 0, 0);
+    //     tf.tidy(() => {
+    //         const tf_image = tf.browser.fromPixels(canvas, 3);
+        
+    //         w_uploaded = tf_image.shape[1];
+    //         h_uploaded = tf_image.shape[0];
+    //         ar_uploaded = w_uploaded/h_uploaded;
+    //         ar_uploaded_3 = Math.round(1000*ar_uploaded)/1000
+    //         // If no image has been uploaded yet, use the aspect ratio of the uploaded image
+    //         if(!boolean_uploaded){
+    //             ar = ar_uploaded_3;
+    //             dl = dl_current;
+    //             w_current = (ar>1) ? Math.ceil(dl*ar) : dl ;
+    //             h_current = (ar>1) ? dl : Math.ceil(dl/ar) ;
+    //             updateDefaults(w_current,h_current);
+    //             boolean_uploaded = true;
+    //         }
+    //         model_px = createModel(h=tf_image.shape[0],w=tf_image.shape[1],ar=ar,dl=dl);
+    //         const tf_image_model = model_px.predict(tf_image.expandDims(0)).squeeze().round().cast('int32');
+    //         const img_output_px = tf.browser.toPixels(tf_image_model);
+    //         dict_tf_array[id_out] = tf_image_model.arraySync();
+    //     })
+    //     // console.log(`w_current:${w_current} h_current:${h_current} ar_current:${ar_current} dl_current:${dl_current}`)
+    //     // console.log(`w_uploaded:${w_uploaded} h_uploaded:${h_uploaded} ar_uploaded:${ar_uploaded}`)
+    // }
+
+
+    // // Convert the array with dict_tf_array[id] to svg string in dict_svg[id]
+    // function array2svg(id,factor=100,rx=0,p=0){
+    //     return new Promise((resolve,reject) => {
+    //         if (id in dict_tf_array){
+    //             js_array = dict_tf_array[id];
+    //             h=js_array.length;
+    //             w=js_array[0].length;
+    //             render=(rx==0 && p==0)?'crispEdges':'geometricPrecision';
+    //             const svg_viewBox = `<svg class="h-auto w-auto rounded-box" viewBox="0 0 ${w*factor} ${h*factor}" xmlns="http://www.w3.org/2000/svg">`;
+    //             const svg_defs = `<defs><rect id="1x1" width="${factor-(2*p)}" height="${factor-(2*p)}" rx="${rx}" shape-rendering="${render}" /></defs>`
+    //             var svg_loop = ''
+    //             for(var ih=0;ih<h;ih++){
+    //                 var row = js_array[ih];
+    //                 for(var iw=0;iw<w;iw++){
+    //                     svg_loop += `<use x="${p+(iw*factor)}" y="${p+ih*factor}" fill="rgb(${row[iw]})" href="#1x1"/>`
+    //                 }
+    //             }
+    //             const svg_string = svg_viewBox + svg_defs + '<g>' + svg_loop + '</g>' + '</svg>'
+    //             dict_svg[id]=svg_string;
+    //             resolve();
+    //         }
+    //     })
+    // };
+
+
+    // function svg2png(svg_in,el_img){
+    //     let blob = new Blob([svg_in], {type: 'image/svg+xml'});
+    //     let url = URL.createObjectURL(blob);
+    //     el_img.src = url;
+    //     el_img.addEventListener('load', () => URL.revokeObjectURL(url), {once: true});
+    // };
+
+
+    // async function updateSVG(){
+    //     button_apply_copy.classList.add('btn-disabled');
+    //     button_apply_rotate.classList.add('btn-disabled');
+    //     // await inference();
+    //     await pixelate();
+    //     await array2svg('pixels');
+    //     button_apply_copy.classList.remove('btn-disabled');
+    //     button_apply_rotate.classList.remove('btn-disabled');
+        
+    //     svg2png(dict_svg['pixels'],img_desired);
+    //     img_uploaded.src = URL.createObjectURL(file_uploaded);
+    //     span_wxh_uploaded.innerHTML = `${w_uploaded} x ${h_uploaded}`;
+
+    //     svg2png(dict_svg['pixels'],img_carousel_example);
+    // };
+
+    async function updateSVG_ars(){
+
+        for(let fi=0;fi<array_formats.length;fi++){
+            si = array_formats[fi];
+            ari = si.split('_');
+            ari_raw = Number(ari[0])/Number(ari[1]);
+            // Check if both aspect ratios have same orientation:
+            boolean_ars = ((ari_raw-1)*(ar_current-1)<0)? false: true;
+            ari_inf = boolean_ars? ari_raw: 1/ari_raw;
+            // ari_inf = ((ari_raw-1)*(ar_current-1)<0)? 1/ari_raw: ari_raw;
+            // await inference(ari_inf,dl_current,si);
+            await pixelate(ari_inf,dl_current,si);
+            await array2svg(si);
+            svg2png(dict_svg[si],document.getElementById(`img_${si}`));
+            [_,_,w,h] = dict_svg[si].match(/viewBox="([\s\S]*?)"/)[1].split(' ');
+            // img_4_3 = document.getElementById('img_4_3');
+            document.getElementById(`span_wxh_${si}`).innerText = `${String(Number(w)/100)} x ${String(Number(h)/100)}`;
+
+        }
+        // await inference(1,dl_current,'1_1');
+        // await array2svg('1_1');
+        // svg2png(dict_svg['1_1'],img_1_1);
+        // [_,_,w,h] = dict_svg['1_1'].match(/viewBox="([\s\S]*?)"/)[1].split(' ');
+
+        // span_wxh_1_1.innerText = `${String(Number(w)/100)} x ${String(Number(h)/100)}`;
+    }
+
+    // Apply method 'mode' instead of 'avg'
+    function updateSVG_mode(){
+        // TO DO
+    }
+
+    function updateSVG_styles(){
+        sample_size = [5,5];
+
+        svgCircles = svg_circles(dict_svg['pixels']);
+        svg2png(svgCircles,img_circles);
+        span_wxh_circles.innerText = `${w_current} x ${h_current}`;
+        dict_svg['circles']=svgCircles;
+        dict_svg['circles_sample'] = svg_sample(dict_svg['circles'],sample_w=sample_size[0],sample_h=sample_size[1]);
+        svg2png(dict_svg['circles_sample'],document.getElementById('img_sample_circles'));
+
+        svgSquares = svg_squares(dict_svg['pixels']);
+        svg2png(svgSquares,img_squares);
+        span_wxh_squares.innerText = `${w_current} x ${h_current}`;
+        dict_svg['squares']=svgSquares;
+        dict_svg['squares_sample'] = svg_sample(dict_svg['squares'],sample_w=sample_size[0],sample_h=sample_size[1]);
+        svg2png(dict_svg['squares_sample'],document.getElementById('img_sample_squares'));
+
+        svgBricks = svg_brickify(dict_svg['pixels']);
+        svg2png(svgBricks,img_bricks);
+        span_wxh_bricks.innerText = `${w_current} x ${h_current}`;
+        dict_svg['bricks']=svgBricks;
+        dict_svg['bricks_sample'] = svg_sample(dict_svg['bricks'],sample_w=sample_size[0],sample_h=sample_size[1]);
+        svg2png(dict_svg['bricks_sample'],document.getElementById('img_sample_bricks'));
+    }
+
+    
+
+
+    // function download_svg(id){
+    //     id_svg = (id=='desired') ? 'pixels' : id;
+    //     var svgData = dict_svg[id_svg];
+    //     svgData = svgData.replace(/\\/g, ''); //Needed for Safari
+    //     var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    //     var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    //     var svgUrl = URL.createObjectURL(svgBlob);
+    //     var downloadLink = document.createElement("a");
+    //     downloadLink.href = svgUrl;
+    //     fname = file_uploaded_name.replace(/\.[^.]+$/, '').replace(' ','_');
+    //     wxh = document.getElementById(`span_wxh_${id}`).innerText;
+
+    //     boolean_add = true;
+    //     boolean_add = boolean_add && (!/^\d/.test(id)); // id starts with number?
+    //     boolean_add = boolean_add && (id!='desired');
+    //     id_title_add = (boolean_add)? '_'+String(id):'';
+    //     // id_title_add = (id_title!='')? `_${id_title}`: '';
+    //     // id_title_add = String(id_title_add);
+
+    //     fname = fname +'_'+ wxh + id_title_add+'_pixelatedartwork_com';
+    //     downloadLink.download = fname;
+    //     document.body.appendChild(downloadLink);
+    //     downloadLink.click();
+    //     document.body.removeChild(downloadLink);   
+    // }
+
+
+    // function download_png(id,min_wh=1000){
+    //     // id='bricks';min_wh=1000;
+    //     id_svg = (id=='desired') ? 'pixels' : id;
+    //     var svgData = dict_svg[id_svg];
+    //     // const regex = /(?<![\w,.()#])(\d+(?:\.\d+)?)/g;
+    //     // svgData = svgData.replace(regex, (match) => parseFloat(match) / 10);
+    //     // svgData = svgData.replace(/\\/g, ''); //Needed for Safari
+    //     parser = new DOMParser();
+    //     svgDoc = parser.parseFromString(svgData, "image/svg+xml");
+    //     viewBox = svgDoc.documentElement.getAttribute('viewBox').split(' ');
+    //     viewBox_w = parseInt(viewBox[2]);
+    //     viewBox_h = parseInt(viewBox[3]);
+    //     // min_wh_viewBox = Math.min(viewBox_w,viewBox_h);
+    //     viewBox_ar = viewBox_w/viewBox_h;
+    //     // w_out = (viewBox_ar>1)?min_wh*viewBox_ar:min_wh;
+    //     // h_out = (viewBox_ar>1)?min_wh:min_wh/viewBox_ar;
+    //     w_out = viewBox_w;
+    //     h_out = viewBox_h;
+
+    //     const canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     canvas.width = w_out;
+    //     canvas.height = h_out;
+
+    //     const img_png = new Image();
+    //     img_png.onload = function(){
+    //         // img_png.width = 20;
+    //         // img_png.height = 20;
+    //         ctx.drawImage(img_png,0,0);
+    //         const a = document.createElement('a');
+    //         wxh = document.getElementById(`span_wxh_${id}`).innerText;
+    //         boolean_add = true;
+    //         boolean_add = boolean_add && (!/^\d/.test(id)); // id starts with number?
+    //         boolean_add = boolean_add && (id!='desired');
+    //         id_title_add = (boolean_add)? '_'+String(id):'';
+    //         fname = file_uploaded_name.replace(/\.[^.]+$/, '').replace(' ','_');
+    //         fname = fname +'_'+ wxh + id_title_add+'_pixelatedartwork_com.png';
+    //         a.download = fname;
+    //         a.href = canvas.toDataURL('image/png');
+            
+    //         document.body.appendChild(a);
+    //         a.click();
+    //         document.body.removeChild(a);
+    //     };
+    //     img_png.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+
+
+
+
+    //     // svg2png(svgData,canvas)
+
+    //     // var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    //     // var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    //     // var svgUrl = URL.createObjectURL(svgBlob);
+
+    //     // let blob = new Blob([svgData], {type: 'image/svg+xml'});
+    //     // let url = URL.createObjectURL(blob);
+
+    //     // const img_png = new Image();
+    //     // img_png.src = url;
+        
+    //     // const canvas = document.createElement('canvas');
+    //     // const ctx = canvas.getContext('2d');
+    //     // canvas.width = img_png.width;
+    //     // canvas.height = img_png.height;
+    //     // ctx.drawImage(img_png, 0, 0);
+        
+    //     // var downloadLink = document.createElement("a");
+    //     // downloadLink.download = 'test.png';
+    //     // downloadLink.href = img_png;
+    //     // downloadLink.click();
+    //     // await new Promise(resolve => img.onload = resolve);
+    //     // // Resize the image using canvas
+    //     // const canvas = document.createElement('canvas');
+    //     // const ctx = canvas.getContext('2d');
+    //     // canvas.width = img.width;
+    //     // canvas.height = img.height;
+    //     // ctx.drawImage(img, 0, 0);
+
+    //     // let blob = new Blob([svg_in], {type: 'image/svg+xml'});
+    //     // let url = URL.createObjectURL(blob);
+    //     // el_img.src = url;
+    //     // el_img.addEventListener('load', () => URL.revokeObjectURL(url), {once: true});
+    // }
+
+    // // ------ SVG style functions: ------
+
+
+    // function svg_circles(svg,padding=0.02){
+    //     svg_circle = svg;
+    //     parser = new DOMParser();
+    //     svgDoc = parser.parseFromString(svg_circle, "image/svg+xml");
+    //     rectElement = svgDoc.getElementById('1x1');
+    //     rect_w = parseInt(rectElement.getAttribute('width'));
+    //     rect_h = parseInt(rectElement.getAttribute('height'));
+    //     px = Math.ceil(padding*rect_w);
+    //     py = Math.ceil(padding*rect_h);
+    //     w_circle = rect_w-2*px;
+    //     h_circle = rect_h-2*py;
+    //     rx = Math.ceil(w_circle/2);
+    //     // svg_out_outer = svg_circle.match(/<svg[^>]*>/)[0];
+
+    //     rectElement.setAttribute('width',w_circle);
+    //     rectElement.setAttribute('height',h_circle);
+    //     rectElement.setAttribute('rx',rx);
+
+    //     const useElements = svgDoc.querySelectorAll('use');
+    //     useElements.forEach(useElement => {
+    //         const x = parseInt(useElement.getAttribute('x'));
+    //         useElement.setAttribute('x', x + px);
+    //         const y = parseInt(useElement.getAttribute('y'));
+    //         useElement.setAttribute('y', y + py);
+    //     });
+
+    //     svg_circle = svgDoc.querySelector('svg').outerHTML;
+    //     return svg_circle
+    // }
+
+
+    // function svg_squares(svg,padding=0.1){
+    //     svg_square = svg_circles(svg,padding=padding);
+    //     parser = new DOMParser();
+    //     svgDoc = parser.parseFromString(svg_circle, "image/svg+xml");
+    //     rectElement = svgDoc.getElementById('1x1');
+    //     rectElement.setAttribute('rx',0);
+    //     svg_square = svgDoc.querySelector('svg').outerHTML;
+    //     return svg_square
+    // }
+
+
+    // function svg_brickify(svg){
+    //     svg_bricks = svg;
+    //     viewBox = svg.match(/viewBox="([\s\S]*?)"/)[1].split(' ');
+    //     viewBox_w = viewBox[2];
+    //     viewBox_h = viewBox[3];
+    //     brick_stud_h = svg.match(/id="1x1"[\s\S]*?height="([\s\S]*?)"/)[1];
+    //     brick_stud_w = svg.match(/id="1x1"[\s\S]*?width="([\s\S]*?)"/)[1];
+    //     svg_bricks_defs = `<defs>
+    //         <filter id="blur" x="0" y="0">
+    //             <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    //         </filter>`;
+    //     svg_bricks_defs += `<mask id="stud_circle">
+    //             <rect x="0" y="0" width="${brick_stud_w}" height="${brick_stud_h}" fill="white"/>
+    //             <circle cx="${0.5*brick_stud_w}" cy="${0.5*brick_stud_h}" r="${0.31*brick_stud_w}" fill="black" shape-rendering="geometricPrecision"/>
+    //         </mask>`;
+    //     svg_bricks_defs += `<pattern id="bricks_pattern" width="${brick_stud_w}" height="${brick_stud_h}" patternUnits="userSpaceOnUse">
+    //             <rect x="0" y="0" width="${brick_stud_w}" height="${brick_stud_h}"/>
+    //             <circle cx="${0.54*brick_stud_w}" cy="${0.54*brick_stud_h}" r="${0.31*brick_stud_w}" fill="black" stroke-width="1" shape-rendering="geometricPrecision" opacity="0.4" mask="url(#stud_circle)" style="filter:url(#blur);"/>
+    //             <circle cx="${0.5*brick_stud_w}" cy="${0.5*brick_stud_h}" r="${0.31*brick_stud_w}" stroke-width="2" stroke-opacity="0.3" stroke="rgba(240,240,240)" stroke-dasharray="60 200" stroke-dashoffset="-90" shape-rendering="geometricPrecision"/>
+    //         </pattern>`;
+    //     bricks_rect = `<rect id="rect_pattern" x="0" y="0" height="${viewBox_h}" width="${viewBox_w}" fill="url(#bricks_pattern)"/>`;
+    //     // Make sure fill of svg is none
+    //     svg_tag = svg.match(/<svg[\s\S]*?>/)[0];
+    //     if (svg_tag.includes('fill=')){
+    //         svg_tag_new = svg_tag.replace(/fill="[\s\S]*?"/g, 'fill="none"');
+    //     } else {
+    //         svg_tag_new = svg_tag.replace(/>$/g, ' fill="none" >');
+    //     }
+    //     // svg_tag_new
+    //     svg_bricks = svg_bricks.replace(svg_tag,svg_tag_new);
+    //     // Add studs to defs:
+    //     svg_bricks = svg_bricks.replace('<defs>',svg_bricks_defs);
+    //     // Add strokes:
+    //     svg_bricks = svg_bricks.replace(/(<rect id="\d+x\d+")/, '$1 stroke="black" stroke-opacity="0.1"');
+    //     // Add top layers with studs:
+    //     svg_bricks = svg_bricks.replace('</svg>',bricks_rect+'</svg>');
+    //     svg_bricks = svg_bricks.replace('shape-rendering="crispEdges"','shape-rendering="geometricPrecision"')
+    //     return svg_bricks
+    // };
+
+    // function svg_sample(svg=dict_svg['pixels'],sample_w=5,sample_h=5){
+    //     // svg=dict_svg['squares'];sample_w=5;sample_h=5
+    //     parser = new DOMParser();
+    //     svgDoc = parser.parseFromString(svg, "image/svg+xml");
+    //     viewBox = svgDoc.documentElement.getAttribute('viewBox').split(' ');
+    //     // viewBox_w = viewBox[2];
+    //     // viewBox_h = viewBox[3];
+    //     rectElement = svgDoc.getElementById('1x1');
+    //     rect_w = parseInt(rectElement.getAttribute('width'));
+    //     rect_h = parseInt(rectElement.getAttribute('height'));
+    //     svg_out_defs = svgDoc.querySelector('defs').outerHTML;
+    //     svg_out_defs = svg_out_defs.replace(/ xmlns="[^"]+"/,'');
+    //     // Get all the rects for the sample and edit x and y values:
+    //     svg_uses = svgDoc.querySelectorAll('use');
+    //     setX = new Set();
+    //     setY = new Set();
+    //     svg_uses.forEach(use => {
+    //         const x = use.getAttribute('x');
+    //         setX.add(x);
+    //         const y = use.getAttribute('y');
+    //         setY.add(y);
+    //     });
+    //     const sortedX = Array.from(setX).sort((a,b)=> a-b);
+    //     const sortedY = Array.from(setY).sort((a,b)=> a-b);
+    //     lenX = sortedX.length;
+    //     lenY = sortedY.length;
+    //     h1 = Math.ceil((lenX/2)-(sample_w/2));
+    //     v1 = Math.ceil((lenY/2)-(sample_h/2));
+    //     xs = sortedX.slice(h1,h1+sample_w);
+    //     ys = sortedY.slice(v1,v1+sample_h);
+    //     x1 = xs[0];
+    //     y1 = ys[0];
+    //     x2 = xs[sample_w-1];
+    //     y2 = ys[sample_h-1];
+    //     svg_out_rects = '';
+    //     for(const xi of xs){
+    //         for(const yi of ys){
+    //             rect_ij=svgDoc.querySelector(`use[x="${xi}"][y="${yi}"]`).outerHTML;
+    //             rect_ij=rect_ij.replace(/x="\d+"/,`x="${xi-x1}"`);
+    //             rect_ij=rect_ij.replace(/y="\d+"/,`y="${yi-y1}"`);
+    //             rect_ij=rect_ij.replace(/ xmlns="[^"]+"/,'');
+    //             svg_out_rects+=rect_ij;
+    //         }
+    //     }
+    //     // Glue all strings together:
+        
+    //     viewBox_w_new = parseInt(x2)-parseInt(x1)+rect_w;
+    //     viewBox_h_new = parseInt(y2)-parseInt(y1)+rect_h;
+    //     svg_out_outer = svg.match(/<svg[^>]*>/)[0];
+    //     viewBox_outer = `viewBox="0 0 ${viewBox_w_new} ${viewBox_h_new}"`;
+    //     svg_out_outer = svg_out_outer.replace(/viewBox="([^"]+)"/,viewBox_outer);
+    //     svg_out = svg_out_outer + svg_out_defs + '<g>' + svg_out_rects + '</g></svg>';
+    //     svg_out = svg_out.replace('rounded-box','');
+    //     boolean_rect_pattern = !!svgDoc.getElementById('rect_pattern');
+    //     if(boolean_rect_pattern){
+    //         svg_rect_pattern = svgDoc.getElementById('rect_pattern').outerHTML;
+    //         svg_rect_pattern = svg_rect_pattern.replace(/height="\d+"/,`height="${viewBox_h_new}"`);
+    //         svg_rect_pattern = svg_rect_pattern.replace(/width="\d+"/,`width="${viewBox_w_new}"`);
+    //         svg_out = svg_out.replace('</svg>',`${svg_rect_pattern}</svg>`)
+    //     }
+    //     return(svg_out);
+    // }
+
+    // // DEPRECATED:
+    // function svg_sample2(svg=dict_svg['pixels'],sample_w=3,sample_h=2){
+    //     parser = new DOMParser();
+    //     svgDoc = parser.parseFromString(svg, "image/svg+xml");
+    //     viewBox = svgDoc.documentElement.getAttribute('viewBox').split(' ');
+    //     viewBox_w = viewBox[2];
+    //     viewBox_h = viewBox[3];
+    //     rectElement = svgDoc.getElementById('1x1');
+    //     rect_w = parseInt(rectElement.getAttribute('width'));
+    //     rect_h = parseInt(rectElement.getAttribute('height'));
+    //     nx = Math.floor(viewBox_w/rect_w);
+    //     ny = Math.floor(viewBox_h/rect_h);
+    //     var xm = Math.floor(nx/2);
+    //     var ym = Math.floor(ny/2);
+    //     var xs = (xm - Math.floor(sample_w/2))*rect_w;
+    //     var xe = (xm + Math.ceil(sample_w/2))*rect_w;
+    //     var ys = (ym - Math.floor(sample_h/2))*rect_h;
+    //     var ye = (ym + Math.ceil(sample_h/2))*rect_h;
+    //     var x0 = xs;
+    //     var y0 = ys;
+    //     // Build svg_out:
+    //     // viewBox_outer = `viewBox="${xs} ${ys} ${xe-xs} ${ye-ys}"`
+    //     viewBox_outer = `viewBox="0 0 ${xe-xs} ${ye-ys}"`;
+    //     svg_out_outer = svg.match(/<svg[^>]*>/)[0];
+    //     svg_out_outer = svg_out_outer.replace(/viewBox="([^"]+)"/,viewBox_outer);
+    //     // console.log(svg_out_outer);
+    //     // !!svgDoc.querySelector('defs')
+    //     if (true){
+    //         svg_out_defs = svgDoc.querySelector('defs').outerHTML;
+    //         svg_out_defs = svg_out_defs.replace(/ xmlns="[^"]+"/,'');
+    //     } else {
+    //         svg_out_defs = '';
+    //     }
+    //     // svg_out_defs = svgDoc.querySelector('defs').outerHTML;
+    //     // svg_out_defs = svg_out_defs.replace(/ xmlns="[^"]+"/,'');
+    //     svg_out_rects = '';
+    //     for (let i = xs; i < xe; i += rect_w) {
+    //         for (let j = ys; j < ye; j += rect_h) {
+    //             rect_sample_ij = svgDoc.querySelector(`use[x="${i}"][y="${j}"]`).outerHTML;
+    //             rect_sample_ij = rect_sample_ij.replace(/x="\d+"/,`x="${i-x0}"`);
+    //             rect_sample_ij = rect_sample_ij.replace(/y="\d+"/,`y="${j-y0}"`);
+    //             rect_sample_ij = rect_sample_ij.replace(/ xmlns="[^"]+"/,'');
+    //             svg_out_rects += rect_sample_ij;
+    //         }
+    //     }
+    //     svg_out = svg_out_outer + svg_out_defs + '<g>' + svg_out_rects + '</g></svg>';
+    //     svg_out = svg_out.replace('rounded-box','');
+    //     boolean_rect_pattern = !!svgDoc.getElementById('rect_pattern');
+    //     if(boolean_rect_pattern){
+    //         svg_rect_pattern = svgDoc.getElementById('rect_pattern').outerHTML;
+    //         svg_rect_pattern = svg_rect_pattern.replace(/height="\d+"/,`height="${ye-ys}"`);
+    //         svg_rect_pattern = svg_rect_pattern.replace(/width="\d+"/,`width="${xe-xs}"`);
+    //         svg_out = svg_out.replace('</svg>',`${svg_rect_pattern}</svg>`)
+    //     }
+    //     return svg_out
+    // };
+
+</script>
