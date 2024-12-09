@@ -42,7 +42,7 @@
      
     <div id="div_image_grid" class="max-w-screen-xl mx-auto hidden min-h-screen bg-neutral-content px-4 pt-30">
         
-        <div class="px-8 max-w-screen-sm pb-4">
+        <div class="px-8 max-w-screen-sm pt-4 sm:pt-0 pb-4">
             <h2 class="text-2xl font-semibold">Desired output</h2>
             <p class="font-light text-balance">Current output is <span id="span_wxh_desired_explanation" class="font-bold"></span> pixels, you can change this with the controls at the bottom, or upload another file.</p>
         </div>
@@ -103,22 +103,22 @@
     
     
     <!-- User controls after uploaded (hidden at page load): -->
-    <div id="bm" class="hidden bottom-6 sticky mx-auto relative grid grid-cols-3 px-2 gap-x-2 w-[440px] place-items-center bg-neutral-content rounded-box shadow-xl z-20">
-        <div class="text-base-300 font-semibold text-xs pt-2 order-3 sm:order-1 justify-self-end sm:justify-self-center pr-2 sm:pr-0">FILE</div>
-        <div class="text-base-300 font-semibold text-xs pt-2 order-1 sm:order-2 justify-self-end sm:justify-self-center pr-2 sm:pr-0">OUTPUT</div>
-        <div class="text-base-300 font-semibold text-xs pt-2 order-5 sm:order-3 justify-self-end sm:justify-self-center pr-2 sm:pr-0">QUICK CONTROLS</div>
-        <label id="bm1" class="col-span-2 sm:col-span-1 order-4 sm:order-4 bg-primary z-50 h-10 my-2 w-full hover:text-base-100 hover:bg-base-content px-2 py-1 rounded-lg flex items-center justify-center cursor-pointer group transition ease-in-out hover:scale-[0.95]">
+    <div id="bm" class="hidden bottom-6 sticky mx-auto relative grid sm:grid-cols-3 px-2 py-2 sm:py-0 gap-x-2 max-w-[220px] sm:max-w-[440px] place-items-center bg-neutral-content rounded-box shadow-xl z-20">
+        <div class="hidden sm:block text-base-300 font-semibold text-xs pt-2 sm:order-1 justify-self-end sm:justify-self-center pr-2 sm:pr-0">FILE</div>
+        <div class="hidden sm:block text-base-300 font-semibold text-xs pt-2 sm:order-2 justify-self-end sm:justify-self-center pr-2 sm:pr-0">OUTPUT</div>
+        <div class="hidden sm:block text-base-300 font-semibold text-xs pt-2 sm:order-3 justify-self-end sm:justify-self-center pr-2 sm:pr-0">QUICK CONTROLS</div>
+        <label id="bm1" class="w-full max-w-48 order-2 sm:order-4 bg-primary z-50 h-10 my-2 hover:text-base-100 hover:bg-base-content px-2 py-1 rounded-lg flex items-center justify-center cursor-pointer group transition ease-in-out hover:scale-[0.95]">
             <span class="group-hover:hidden truncate text-sm px-1" id="span_filename">placeholder.png</span>
             <span class="hidden group-hover:block">Upload new file</span>
             <input id="input_file_bm" type="file" accept=".bmp,.gif,.jpeg,.jpg,.png,.webp" class="hidden" title=" ">
         </label>
-        <div id="bm2" class="col-span-2 sm:col-span-1 order-2 sm:order-5 peer/bm2 bg-primary z-50 h-10 my-2 w-full hover:text-base-100 hover:bg-base-content px-2 py-1 rounded-lg flex justify-center items-center gap-1 cursor-pointer tooltip tooltip-bottom" data-tip="Adjust the desired output">
+        <div id="bm2" class="w-full max-w-48 order-1 sm:order-5 peer/bm2 bg-primary z-50 h-10 my-2 hover:text-base-100 hover:bg-base-content px-2 py-1 rounded-lg flex justify-center items-center gap-1 cursor-pointer tooltip tooltip-bottom" data-tip="Adjust the desired output">
             <div class="w-6 h-6">
                 <svg class="stroke-current stroke-2" fill="currentColor" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><g> <path d="M112,44H48a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,112,44Zm-4,64H52V52h56ZM208,44H144a4,4,0,0,0-4,4v64a4,4,0,0,0,4,4h64a4,4,0,0,0,4-4V48A4,4,0,0,0,208,44Zm-4,64H148V52h56Zm-92,32H48a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,112,140Zm-4,64H52V148h56Zm100-64H144a4,4,0,0,0-4,4v64a4.0002,4.0002,0,0,0,4,4h64a4.0002,4.0002,0,0,0,4-4V144A4,4,0,0,0,208,140Zm-4,64H148V148h56Z"></path> </g></svg>
             </div>
             <div class="text-lg font-semibold" id="div_wxh_bm">35 x 25</div>
         </div>
-        <div id="bm3" class="col-span-2 sm:col-span-1 order-6 sm:order-6 peer/bm3 z-50 h-10 my-2 w-full flex items-center justify-center gap-2">
+        <div id="bm3" class="order-3 sm:order-6 peer/bm3 z-50 h-10 my-2 w-full flex items-center justify-center gap-2">
             <button id="button_apply_rotate" class="h-10 w-10 pl-1 pr-2 pt-1 pb-2 border rounded-lg bg-gray-100 hover:text-base-100 hover:bg-base-content tooltip tooltip-bottom cursor-pointer flex items-center justify-center " data-tip="Swap width and height">
                 <svg class="stroke-current stroke-2 w-6 h-6" fill="currentColor" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g> <path fill-rule="evenodd" clip-rule="evenodd" d="M639.999 209.777h116.019L621.665 75.425 697.09 0l263.111 263.111-260.196 260.196-75.425-75.424 131.439-131.439h-116.02c-176.731 0-320 143.269-320 320H213.332c0-235.642 191.025-426.667 426.667-426.667Zm0 643.556c0-117.82 95.512-213.333 213.333-213.333h853.338c117.82 0 213.33 95.513 213.33 213.333v853.337c0 117.82-95.51 213.33-213.33 213.33H853.332c-117.821 0-213.333-95.51-213.333-213.33V853.333Zm213.333-106.666h853.338c58.91 0 106.66 47.756 106.66 106.666v853.337c0 58.91-47.75 106.66-106.66 106.66H853.332c-58.91 0-106.667-47.75-106.667-106.66V853.333c0-58.91 47.757-106.666 106.667-106.666Z"></path> </g></svg>
             </button>
@@ -128,9 +128,9 @@
         </div>
     
     
-        <div id="bmi2" onmouseover="hover_div('bm2')" onmouseleave="unhover_div('bm2')" class="z-40 w-[460px] invisible absolute pb-40 sm:pb-16 pt-3 -bottom-[10px] peer-hover/bm2:visible hover:visible col-span-3 bg-neutral-content shadow-xl rounded-box cursor-pointer">
+        <div id="bmi2" onmouseover="hover_div('bm2')" onmouseleave="unhover_div('bm2')" class="z-40 w-[460px] max-w-[70vw] invisible absolute pb-40 sm:pb-16 pt-3 -bottom-[10px] peer-hover/bm2:visible hover:visible col-span-3 bg-neutral-content shadow-xl rounded-box cursor-pointer">
             
-            <div class="py-4 rounded-box hover:bg-gray-100 px-6 transition ease-in-out hover:scale-[0.95]">
+            <div class="py-8 sm:py-4 rounded-box hover:bg-gray-100 px-6 transition ease-in-out hover:scale-[0.95]">
                 <p class="text-base font-semibold -ml-1"><span class="bg-base-200 px-2 py-1 rounded-lg mr-2">Option 1</span>Define yourself</p>
                 <p class="text-sm pt-1 pl-1">Edit width and/or height and press apply</p>
                 <div class="flex pt-2 gap-2 mt-2">
