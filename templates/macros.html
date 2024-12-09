@@ -325,11 +325,11 @@
       <div class="absolute w-full h-full opacity-0 group-hover:opacity-90 bg-base-100 rounded-box"></div>
       <div class="absolute opacity-0 group-hover:opacity-100 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <p class="badge badge-secondary">5x5 zoom</p>
-        <img id="img_sample_{{id}}" class="h-48 w-48 bg-neutral-content" src="" alt="{{id}} output sample">
+        <img id="img_sample_{{id}}" class="h-48 w-48 bg-neutral-content" src="data:," alt="{{id}} output sample">
       </div>
       {%endif%}
       
-      <img id="img_{{id}}" class="rounded-box {%if (id=='uploaded')%}h-48{%else%}h-[calc(50vh_-_120px)]{%endif%}" src="" alt="{{id}} output format">
+      <img id="img_{{id}}" class="rounded-box {%if (id=='uploaded')%}h-48{%else%}h-[calc(50vh_-_120px)]{%endif%}" src="data:," alt="{{id}} output format">
     </div>
     
     {% if id=='uploaded' %}
