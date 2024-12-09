@@ -23,19 +23,10 @@
         </div>
 
         <div id="img_examples" class="sm:justify-self-start relative">
-            <div class="img_example opacity-100 transition-opacity duration-500 absolute top-0 left-0 grid grid-cols-2 gap-2 h-full w-full">
-                <div class="">
-                    <img class="w-[70%] ml-[30%] mt-[20%] rounded-box" src="{{url_for('static',filename='images/svg/vermeer-girl-with-pearl-earring_25x31_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
-                    <img class="mt-2 w-full rounded-box" src="{{url_for('static',filename='images/svg/hokusai_tsunami_60x40_pixelatedartwork_com.svg')}}" alt="Tsunami (Hokusai)">
-                </div>
-                <div class="">
-                    <img class="w-[85%] mt-[30%] rounded-box" src="{{url_for('static',filename='images/svg/tardelli_cheer_40 x 30_pixelatedartwork_com.svg')}}" alt="Tardelli world cup 1982">
-                    <img class="mt-2 w-[70%] rounded-box" src="{{url_for('static',filename='images/svg/taj_mahal_40x40_pixelatedartwork_com.svg')}}" alt="Taj Mahal">
-                </div>
-            </div>
-            <div class="img_example opacity-0 transition-opacity duration-500 relative max-h-[500px] max-w-[500px] h-[80vw] sm:h-[40vw] w-[80vw] sm:w-[40vw]">
+            <div class="img_example relative max-h-[500px] max-w-[500px] h-[80vw] w-[80vw] sm:h-[40vw] sm:w-[40vw]">
                 <img class="absolute inset-0 w-full h-full object-cover rounded-box" src="{{url_for('static',filename='images/webp/chair_taupe_wall.webp')}}" alt="">
-                <img class="absolute shadow-lg max-w-[170px] max-h-[210px] top-[8vh] sm:top-[4vh] left-[10vw] sm:left-[6vw] h-[31vw] sm:h-[18vw] w-[25vw] sm:w-[13vw] object-cover border-4 border-gray-700" src="{{url_for('static',filename='images/svg/vermeer-girl-with-pearl-earring_25x31_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
+                <img class="absolute shadow-lg max-w-[170px] max-h-[210px] top-[8vh] left-[10vw] w-[25vw] h-[31vw] sm:top-[4vh] sm:left-[6vw] sm:h-[18vw] sm:w-[13vw] object-cover border-4 border-gray-700" src="{{url_for('static',filename='images/svg/famous-art/girl-with-pearl-earring-by-Vermeer_25x31_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
+                <img class="2xl:hidden absolute shadow-lg max-w-[180px] max-h-[120px] top-[10vh] left-[40vw] w-[32vw] h-[24vw] sm:top-[6vh] sm:left-[20vw] sm:h-[12vw] sm:w-[18vw] object-cover border-4 border-gray-700" src="{{url_for('static',filename='images/svg/famous-art/the-great-wave-off-kanagawa-by-hokusai_60x40_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
             </div>
             
         </div>
@@ -44,45 +35,6 @@
 </div>
 
 <div class="relative">
-
-    <!-- <div id="div_welcome2" class="hidden w-full bg-gradient-to-b from-white to-gray-50">
-
-        <div class="min-h-screen sm:min-h-[75vh] min-w-screen justify-center items-center landscape:items-start max-w-screen-xl mx-auto gap-4 sm:flex px-4 sm:px-10 py-10">
-            
-            <div id="div_welcome_upload2" class="mx-auto w-full sm:w-1/2 landscape:mt-[10vh]">
-                <div class="mx-auto max-w-72 sm:max-w-[500px] text-center sm:text-left">
-                    <h1 class="text-balance font-bold text-3xl sm:text-5xl">
-                        Convert any image into <span class="text-secondary font-bold">Pixel Art</span>
-                    </h1>
-                    <p class="text-balance font-light sm:text-lg pt-8">Upload your image, pick desired output size and download SVG and PNG files.</p>
-                    <label class="shadow-xl mt-10 btn btn-lg btn-wide btn-primary transition ease-in-out hover:scale-[0.95]">
-                        <span>Upload image</span>
-                        <input id="input_file_welcome2" type="file" accept=".bmp,.gif,.jpeg,.jpg,.png,.webp" class="hidden" title=" " />
-                    </label>
-                    <p class="font-light pt-2 pl-1 text-sm max-w-72">100% free, no signup required, <br><a class="underline" href="{{url_for('faq')}}">we don't store or share any of your images</a></p>
-                </div>
-                
-            </div>
-
-            <div id="img_examples2" class="mx-auto sm:w-1/2 mt-10 sm:mt-0 relative">
-                <div class="img_example opacity-100 transition-opacity duration-500 absolute top-0 left-0 grid sm:grid-cols-2 gap-2">
-                    <div class="flex sm:flex-col gap-2 items-end justify-center">                        
-                        <img class="w-1/2 sm:w-3/4 rounded-box" src="{{url_for('static',filename='images/svg/vermeer-girl-with-pearl-earring_25x31_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
-                        <img class="w-1/2 sm:w-full rounded-box" src="{{url_for('static',filename='images/svg/hokusai_tsunami_60x40_pixelatedartwork_com.svg')}}" alt="Tsunami (Hokusai)">
-                    </div>
-                    <div class="flex sm:flex-col gap-2 items-start justify-center">
-                        <img class="w-1/2 sm:w-5/6 rounded-box" src="{{url_for('static',filename='images/svg/tardelli_cheer_40 x 30_pixelatedartwork_com.svg')}}" alt="Tardelli world cup 1982">
-                        <img class="w-1/2 sm:w-2/3 rounded-box" src="{{url_for('static',filename='images/svg/taj_mahal_40x40_pixelatedartwork_com.svg')}}" alt="Taj Mahal">
-                    </div>
-                </div>
-                <div class="img_example opacity-0 transition-opacity duration-500 absolute top-0 left-0 relative max-h-[640px] max-w-[640px] h-[80vw] sm:h-[40vw] w-[80vw] sm:w-[40vw]">
-                    <img class="absolute inset-0 w-full h-full object-cover rounded-box" src="{{url_for('static',filename='images/webp/chair_taupe_wall.webp')}}" alt="">
-                    <img class="absolute shadow-lg max-w-[250px] max-h-[310px] top-[8vh] sm:top-[4vh] left-[10vw] sm:left-[6vw] h-[31vw] sm:h-[18vw] w-[25vw] sm:w-[13vw] object-cover border-4 border-gray-700" src="{{url_for('static',filename='images/svg/vermeer-girl-with-pearl-earring_25x31_pixelatedartwork_com.svg')}}" alt="girl with pearl earring (Vermeer)">
-                </div>
-            </div>
-    
-        </div>
-    </div> -->
 
     <!-- User pixel art output grid: -->
      <div class="w-full bg-neutral-content">
