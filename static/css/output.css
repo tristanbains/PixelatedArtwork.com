@@ -4374,22 +4374,6 @@ input.tab:checked + .tab-content,
   order: 3;
 }
 
-.order-4 {
-  order: 4;
-}
-
-.order-5 {
-  order: 5;
-}
-
-.order-6 {
-  order: 6;
-}
-
-.col-span-2 {
-  grid-column: span 2 / span 2;
-}
-
 .col-span-3 {
   grid-column: span 3 / span 3;
 }
@@ -4756,8 +4740,16 @@ input.tab:checked + .tab-content,
   max-width: 180px;
 }
 
+.max-w-\[220px\] {
+  max-width: 220px;
+}
+
 .max-w-\[500px\] {
   max-width: 500px;
+}
+
+.max-w-\[80vw\] {
+  max-width: 80vw;
 }
 
 .max-w-screen-md {
@@ -4778,30 +4770,6 @@ input.tab:checked + .tab-content,
 
 .max-w-\[440px\] {
   max-width: 440px;
-}
-
-.max-w-\[90vw\] {
-  max-width: 90vw;
-}
-
-.max-w-\[300px\] {
-  max-width: 300px;
-}
-
-.max-w-\[250px\] {
-  max-width: 250px;
-}
-
-.max-w-\[200px\] {
-  max-width: 200px;
-}
-
-.max-w-\[220px\] {
-  max-width: 220px;
-}
-
-.max-w-\[70vw\] {
-  max-width: 70vw;
 }
 
 .-translate-x-1\/2 {
@@ -4849,6 +4817,10 @@ input.tab:checked + .tab-content,
 
 .grid-flow-col {
   grid-auto-flow: column;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grid-cols-3 {
@@ -5656,6 +5628,12 @@ input.tab:checked + .tab-content,
   visibility: visible;
 }
 
+@media not all and (min-width: 640px) {
+  .max-sm\:hidden {
+    display: none;
+  }
+}
+
 @media (min-width: 640px) {
   .sm\:left-\[20vw\] {
     left: 20vw;
@@ -5697,10 +5675,6 @@ input.tab:checked + .tab-content,
     order: 6;
   }
 
-  .sm\:col-span-1 {
-    grid-column: span 1 / span 1;
-  }
-
   .sm\:block {
     display: block;
   }
@@ -5737,16 +5711,12 @@ input.tab:checked + .tab-content,
     width: 40vw;
   }
 
-  .sm\:w-full {
-    width: 100%;
+  .sm\:max-w-\[440px\] {
+    max-width: 440px;
   }
 
   .sm\:max-w-\[500px\] {
     max-width: 500px;
-  }
-
-  .sm\:max-w-\[440px\] {
-    max-width: 440px;
   }
 
   .sm\:grid-cols-2 {
@@ -5773,14 +5743,14 @@ input.tab:checked + .tab-content,
     justify-self: center;
   }
 
-  .sm\:py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
   .sm\:py-0 {
     padding-top: 0px;
     padding-bottom: 0px;
+  }
+
+  .sm\:py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   .sm\:pb-16 {
@@ -5795,16 +5765,12 @@ input.tab:checked + .tab-content,
     padding-right: 0px;
   }
 
-  .sm\:pt-20 {
-    padding-top: 5rem;
-  }
-
   .sm\:pt-0 {
     padding-top: 0px;
   }
 
-  .sm\:pt-3 {
-    padding-top: 0.75rem;
+  .sm\:pt-20 {
+    padding-top: 5rem;
   }
 
   .sm\:text-left {
