@@ -14,7 +14,7 @@
         {% endfor %}
         {% if 'canonical' in dict_page_meta%}<link rel="canonical" href="{{dict_page_meta['canonical']}}">{%endif%}
     {% endif %}
-    
+    {% include "google_analytics.html" %}
 </head>
 <body class="min-h-screen">
     {{ macros.topmenu() }}

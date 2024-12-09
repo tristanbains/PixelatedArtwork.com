@@ -30,6 +30,7 @@ dict_website = {
     'lang':'en',
     'sitemap_images':'', 
     'data_theme':'emerald', # DaisyUI theme, must be mentioned in tailwind.config.js
+    'google_analytics_id':'G-RTNX9G3KBH',
 }
 
 # Schema settings that apply to all pages: (define page-specific inside routes)
