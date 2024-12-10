@@ -4740,8 +4740,8 @@ input.tab:checked + .tab-content,
   max-width: 180px;
 }
 
-.max-w-\[220px\] {
-  max-width: 220px;
+.max-w-\[440px\] {
+  max-width: 440px;
 }
 
 .max-w-\[500px\] {
@@ -4768,8 +4768,8 @@ input.tab:checked + .tab-content,
   max-width: 20rem;
 }
 
-.max-w-\[440px\] {
-  max-width: 440px;
+.max-w-\[70vw\] {
+  max-width: 70vw;
 }
 
 .-translate-x-1\/2 {
@@ -5202,10 +5202,6 @@ input.tab:checked + .tab-content,
 
 .pb-4 {
   padding-bottom: 1rem;
-}
-
-.pb-40 {
-  padding-bottom: 10rem;
 }
 
 .pl-1 {
@@ -5675,8 +5671,20 @@ input.tab:checked + .tab-content,
     order: 6;
   }
 
+  .sm\:ml-4 {
+    margin-left: 1rem;
+  }
+
+  .sm\:mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
   .sm\:block {
     display: block;
+  }
+
+  .sm\:flex {
+    display: flex;
   }
 
   .sm\:h-\[12vw\] {
@@ -5711,12 +5719,16 @@ input.tab:checked + .tab-content,
     width: 40vw;
   }
 
-  .sm\:max-w-\[440px\] {
-    max-width: 440px;
-  }
-
   .sm\:max-w-\[500px\] {
     max-width: 500px;
+  }
+
+  .sm\:max-w-48 {
+    max-width: 12rem;
+  }
+
+  .sm\:max-w-\[440px\] {
+    max-width: 440px;
   }
 
   .sm\:grid-cols-2 {
@@ -5748,15 +5760,6 @@ input.tab:checked + .tab-content,
     padding-bottom: 0px;
   }
 
-  .sm\:py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  .sm\:pb-16 {
-    padding-bottom: 4rem;
-  }
-
   .sm\:pl-10 {
     padding-left: 2.5rem;
   }
@@ -5773,6 +5776,10 @@ input.tab:checked + .tab-content,
     padding-top: 5rem;
   }
 
+  .sm\:pt-6 {
+    padding-top: 1.5rem;
+  }
+
   .sm\:text-left {
     text-align: left;
   }
@@ -5785,6 +5792,11 @@ input.tab:checked + .tab-content,
   .sm\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
+  }
+
+  .sm\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 }
 
