@@ -166,7 +166,7 @@ def faq():
     dict_page_meta = {**dict_meta_empty, 
                       'title': 'Frequently Asked Questions - PixelatedArtwork.com',
                       'description':'Answers to the most frequently asked questions. Can I use the images commercially? Are you storing my images? How can I download the generated pixel art?',
-                      'canonical': dict_website['base_url']+'faq'
+                      'canonical': dict_website['base_url']+'faq/'
                       }
                         
                       
@@ -226,7 +226,7 @@ def page(path):
     dict_page_meta = {**dict_meta_empty, **dict_md_all_yaml[path], 'new_val': 'abc',
                       'title':dict_md_all_yaml[path]['title'],
                       'description':dict_md_all_yaml[path]['description'],
-                      'canonical': dict_website['base_url']+path}
+                      'canonical': dict_website['base_url']+path+'/'}
     return render_template(
         "page.html",
         page=page,
