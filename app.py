@@ -156,7 +156,7 @@ def home():
     dict_page_meta = {**dict_meta_empty,
                       'title': 'Convert any image into Pixel Art - online tool, free and no signup required',
                       'description':'Online tool to create pixelated artwork (pixel art) from any image you upload. Free, no signup required.',
-                      'canonical': dict_website['base_url'],#'https://www.pixelatedartwork.com',
+                      'canonical': dict_website['base_url'],
                       }
     return render_template('index.html',dict_page_meta=dict_page_meta)
 
@@ -216,7 +216,6 @@ def inspiration(category):
         'inspiration.html',
         dict_page_meta=dict_page_meta,
         category=category,
-        # images_category=images_category,
         dict_images_category=dict_images_category
         )
 

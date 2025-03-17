@@ -318,7 +318,6 @@
     };
 
     function svg_sample(svg=dict_svg['pixels'],sample_w=5,sample_h=5){
-        // svg=dict_svg['squares'];sample_w=5;sample_h=5
         parser = new DOMParser();
         svgDoc = parser.parseFromString(svg, "image/svg+xml");
         viewBox = svgDoc.documentElement.getAttribute('viewBox').split(' ');
